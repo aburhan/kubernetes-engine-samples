@@ -41,7 +41,7 @@ module "network" {
 module "kafka_us_central1" {
   source                   = "../modules/beta-private-cluster"
   project_id               = var.project_id
-  name                     = "kafka-us-central1"
+  name                     = "gke-kafka-us-central1"
   regional                 = true
   region                   = "us-central1"
   network                  = module.network.network_name

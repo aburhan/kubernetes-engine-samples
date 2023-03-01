@@ -41,7 +41,7 @@ module "network" {
 module "gke_kafka_central" {
   source                          = "../modules/beta-autopilot-private-cluster"
   project_id                      = var.project_id
-  name                            = "cluster1"
+  name                            = "gke-kafka-us-central1"
   kubernetes_version              = "1.25" # Will be ignored if use "REGULAR" release_channel
   region                          = "us-central1"
   regional                        = true
@@ -64,7 +64,7 @@ module "gke_kafka_central" {
 module "gke_kafka_west" {
   source                          = "../modules/beta-autopilot-private-cluster"
   project_id                      = var.project_id
-  name                            = "cluster2"
+  name                            = "gke-kafka-us-west1"
   kubernetes_version              = "1.25" # Will be ignored if use "REGULAR" release_channel
   region                          = "us-west1"
   regional                        = true

@@ -23,15 +23,38 @@ kafka:
     limits:
       cpu: 2
       ephemeral-storage: 1Gi
-      memory: 4Gi
+      memory: 8Gi
     requests:
       cpu: 2
       ephemeral-storage: 1Gi
-      memory: 4Gi
+      memory: 8Gi
   logsDirs: /bitnami/kafka/logs
   persistence:
     size: 1000Gi
   heapOpts: -Xmx4096m -Xms4096m
+  metrics:
+    kafka:
+      enabled: true
+      image:
+        tag: 1.6.0
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "0.5Gi"
+        limits:
+          cpu: "500m"
+          memory: "0.5Gi"
+    jmx:
+      enabled: true
+      image:
+        tag: 0.17.2
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "0.5Gi"
+        limits:
+          cpu: "500m"
+          memory: "0.5Gi"
   zookeeper:
     replicaCount: 3
     nodeAffinityPreset:
@@ -54,11 +77,11 @@ kafka:
       limits:
         cpu: 1
         ephemeral-storage: 1Gi
-        memory: 2Gi
+        memory: 4Gi
       requests:
         cpu: 1
         ephemeral-storage: 1Gi
-        memory: 2Gi
+        memory: 4Gi
 serviceAccount:
   create: true
   name: "ksa-kafka1"

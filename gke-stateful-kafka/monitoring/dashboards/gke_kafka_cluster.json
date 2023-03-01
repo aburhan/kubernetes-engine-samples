@@ -25,7 +25,7 @@
                       "crossSeriesReducer": "REDUCE_NONE",
                       "perSeriesAligner": "ALIGN_MEAN"
                     },
-                    "filter": "metric.type=\"kubernetes.io/node/cpu/allocatable_utilization\" resource.type=\"k8s_node\" resource.label.\"cluster_name\"=\"gke-kafka-us-central1\" metadata.user_labels.\"cloud.google.com/gke-nodepool\"=monitoring.regex.full_match(\"pool-.*\")"
+                    "filter": "metric.type=\"kubernetes.io/node/cpu/allocatable_utilization\" resource.type=\"k8s_node\" resource.label.\"cluster_name\"=\"gke-kafka-us-central1\""
                   }
                 }
               }
@@ -62,7 +62,7 @@
                       "crossSeriesReducer": "REDUCE_NONE",
                       "perSeriesAligner": "ALIGN_MEAN"
                     },
-                    "filter": "metric.type=\"kubernetes.io/node/memory/allocatable_utilization\" resource.type=\"k8s_node\" resource.label.\"cluster_name\"=\"gke-kafka-us-central1\" metadata.user_labels.\"cloud.google.com/gke-nodepool\"=monitoring.regex.full_match(\"pool-.*\")"
+                    "filter": "metric.type=\"kubernetes.io/node/memory/allocatable_utilization\" resource.type=\"k8s_node\" resource.label.\"cluster_name\"=\"gke-kafka-us-central1\""
                   }
                 }
               }
