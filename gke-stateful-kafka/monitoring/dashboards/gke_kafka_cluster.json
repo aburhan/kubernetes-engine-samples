@@ -160,7 +160,7 @@
       {
         "height": 3,
         "widget": {
-          "title": "Disk bytes transferred for gke-gke-kafka-us-central1.*, sdb [MEAN]",
+          "title": "Disk bytes transferred for gke-kafka-us-central1, sdb [MEAN]",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -178,7 +178,7 @@
                       "crossSeriesReducer": "REDUCE_NONE",
                       "perSeriesAligner": "ALIGN_RATE"
                     },
-                    "filter": "metric.type=\"compute.googleapis.com/guest/disk/operation_bytes_count\" resource.type=\"gce_instance\" metric.label.\"instance_name\"=monitoring.regex.full_match(\"gke-gke-kafka-us-central1.*\") metric.label.\"device_name\"=\"sdb\"",
+                    "filter": "metric.type=\"compute.googleapis.com/guest/disk/operation_bytes_count\" resource.type=\"gce_instance\" metric.label.\"instance_name\"=monitoring.regex.full_match(\"gk(e|3)-gke-kafka-us-central.*\") metric.label.\"device_name\"=\"sdb\"",
                     "secondaryAggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_NONE",
@@ -202,7 +202,7 @@
       {
         "height": 3,
         "widget": {
-          "title": "VM Instance - Disk usage for gke-gke-kafka-us-centr.*, sdb, used [MEAN]",
+          "title": "VM Instance - Disk usage for gke-kafka-us-central1, sdb, used [MEAN]",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -220,7 +220,7 @@
                       "crossSeriesReducer": "REDUCE_NONE",
                       "perSeriesAligner": "ALIGN_MEAN"
                     },
-                    "filter": "metric.type=\"compute.googleapis.com/guest/disk/bytes_used\" resource.type=\"gce_instance\" metric.label.\"instance_name\"=monitoring.regex.full_match(\"gke-gke-kafka-us-centr.*\") metric.label.\"device_name\"=\"sdb\" metric.label.\"state\"=\"used\""
+                    "filter": "metric.type=\"compute.googleapis.com/guest/disk/bytes_used\" resource.type=\"gce_instance\" metric.label.\"instance_name\"=monitoring.regex.full_match(\"gk(e|3)-gke-kafka-us-central.*\") metric.label.\"device_name\"=\"sdb\" metric.label.\"state\"=\"used\""
                   }
                 }
               }
@@ -276,7 +276,7 @@
       {
         "height": 3,
         "widget": {
-          "title": "VM Instance - Uptime for gke-gke-kafka-.* [MEAN]",
+          "title": "VM Instance - Uptime for gke-kafka-us-central1 [MEAN]",
           "xyChart": {
             "chartOptions": {
               "mode": "COLOR"
@@ -294,7 +294,7 @@
                       "crossSeriesReducer": "REDUCE_NONE",
                       "perSeriesAligner": "ALIGN_RATE"
                     },
-                    "filter": "metric.type=\"compute.googleapis.com/instance/uptime\" resource.type=\"gce_instance\" metadata.system_labels.\"name\"=monitoring.regex.full_match(\"gke-gke-kafka-.*\")",
+                    "filter": "metric.type=\"compute.googleapis.com/instance/uptime\" resource.type=\"gce_instance\" metadata.system_labels.\"name\"=monitoring.regex.full_match(\"gk(e|3)-gke-kafka-us-central.*\")",
                     "secondaryAggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_NONE",
