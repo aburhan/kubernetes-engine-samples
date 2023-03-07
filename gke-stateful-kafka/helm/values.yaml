@@ -1,0 +1,113 @@
+global:
+  storageClass: premium-rwo-retain-zonal
+kafka:
+  replicaCount: 3
+  nodeAffinityPreset:
+    type: hard
+    key: cloud.google.com/compute-class
+    operator: In
+    values:
+      - Scale-Out
+  tolerations:
+  - key: "app.stateful/component"
+    operator: "Equal"
+    value: "kafka-broker"
+    effect: NoSchedule
+  nodeSelector:
+    app.stateful/component: "kafka-broker"
+    iam.gke.io/gke-metadata-server-enabled: "true"
+  pdb:
+    create: true
+    maxUnavailable: 1
+  resources:
+    limits:
+      cpu: 2
+      ephemeral-storage: 1Gi
+      memory: 8Gi
+    requests:
+      cpu: 2
+      ephemeral-storage: 1Gi
+      memory: 8Gi
+  logsDirs: /bitnami/kafka/logs
+  persistence:
+    size: 1000Gi
+  heapOpts: -Xmx4096m -Xms4096m
+  metrics:
+    kafka:
+      enabled: true
+      image:
+        tag: 1.6.0
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "0.5Gi"
+        limits:
+          cpu: "500m"
+          memory: "0.5Gi"
+    jmx:
+      enabled: true
+      image:
+        tag: 0.17.2
+      resources:
+        requests:
+          cpu: "500m"
+          memory: "0.5Gi"
+        limits:
+          cpu: "500m"
+          memory: "0.5Gi"
+  zookeeper:
+    replicaCount: 3
+    nodeAffinityPreset:
+      type: hard
+      key: cloud.google.com/compute-class
+      operator: In
+      values:
+        - Scale-Out
+    tolerations:
+    - key: "app.stateful/component"
+      operator: "Equal"
+      value: "zookeeper"
+      effect: NoSchedule
+    nodeSelector:
+      app.stateful/component: "zookeeper"       
+    pdb:
+      create: true
+      maxUnavailable: 1
+    resources:
+      limits:
+        cpu: 1
+        ephemeral-storage: 1Gi
+        memory: 4Gi
+      requests:
+        cpu: 1
+        ephemeral-storage: 1Gi
+        memory: 4Gi
+serviceAccount:
+  create: true
+  name: "ksa-kafka1"
+  annotations:
+    iam.gke.io/gcp-service-account: "gsa-kafka@kafka-7.iam.gserviceaccount.com"
+gkeBackup:
+  enabled: true
+  protectedApplications:
+  - name: kafka
+    components:
+      - name: kafka-cluster
+        resourceKind: StatefulSet
+        resourceNames: ["kafka"]
+        strategy:
+          type: BackupAllRestoreAll
+          backupAllRestoreAll: {}
+  - name: zookeeper
+    components:
+      - name: zookeeper
+        resourceKind: StatefulSet
+        resourceNames: ["kafka-zookeeper"]
+        strategy:
+          type: BackupAllRestoreAll
+          backupAllRestoreAll: {}
+storageClass:
+  create: true
+  name: premium-rwo-retain-zonal
+  parameters:
+    type: pd-ssd
