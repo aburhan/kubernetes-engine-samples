@@ -1,0 +1,30 @@
+[req]
+default_bits = 2048
+distinguished_name = req_distinguished_name
+req_extensions = req_ext
+prompt = no
+default_md = sha256
+
+[req_distinguished_name]
+C   = CA
+ST  = Ontario
+L   = Toronto
+O   = Kafka
+CN  = broker.kafka.com
+
+[req_ext]
+subjectAltName = @alt_names
+
+[alt_names]
+DNS.1 = kafka.kafka
+DNS.2 = kafka.kafka.svc
+DNS.3 = kafka.kafka.svc.cluster
+DNS.4 = kafka.kafka.svc.cluster.local
+DNS.5 = kafka-headless.kafka
+DNS.6 = *.kafka-headless.kafka
+DNS.7 = kafka-headless.kafka.svc
+DNS.8 = *.kafka-headless.kafka.svc
+DNS.9 = kafka-headless.kafka.svc.cluster
+DNS.10 = *.kafka-headless.kafka.svc.cluster
+DNS.11 = kafka-headless.kafka.svc.cluster.local
+DNS.12 = *.kafka-headless.kafka.svc.cluster.local

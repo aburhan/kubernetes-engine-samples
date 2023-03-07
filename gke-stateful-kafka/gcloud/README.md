@@ -1,0 +1,34 @@
+## Provision GKE cluster (and Optionally another in a DR Site)
+
+Modify the Environment Variables exported in the script.sh file:
+```
+PROJECT_ID
+LOCATION
+REGION
+ART_REG_REPO_NAME
+VPC_NAME
+SUBNET_NAME
+SUBNET_RANGE
+SUBNET_REGION
+SUBNET_SECONDARY_RANGES
+SERVICE_ACCOUNT_NAME
+SERVICE_ACCOUNT_ROLES
+GKE_CLUSTER_NAME
+GKE_MASTER_CIDR
+GKE_POD_CIDR
+GKE_POD_RANGE_NAME
+GKE_SVC_CIDR
+GKE_SVC_RANGE_NAME
+GKE_NODE_POOL_ZONES
+GKE_NODE_POOL_IMAGE_TYPE
+GKE_OAUTH_SCOPES
+
+## Variables for DR Region
+DR_CREATE
+DR_{OTHER_VAR}
+```
+
+Execute the script
+```
+bash script.sh
+```

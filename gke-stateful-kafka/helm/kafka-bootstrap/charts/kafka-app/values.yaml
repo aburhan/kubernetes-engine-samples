@@ -1,0 +1,136 @@
+global:
+  imageRegistry: "us-docker.pkg.dev/sada-reference-guides/main"
+  storageClass: premium-rwo-retain-zonal
+kafka:
+  image:
+    tag: 3.2.1
+  auth:
+    clientProtocol: mtls
+    interBrokerProtocol: mtls
+    tls:
+      type: pem
+      existingSecrets: ["kafka-pem-0","kafka-pem-1","kafka-pem-2"]
+  replicaCount: 3
+  nodeAffinityPreset:
+    type: hard
+    key: cloud.google.com/compute-class
+    operator: In
+    values:
+      - Scale-Out
+  podAntiAffinityPreset: "hard"
+  topologySpreadConstraints:
+  - topologyKey: "topology.kubernetes.io/zone"
+    whenUnsatisfiable: DoNotSchedule
+    maxSkew: 1
+  tolerations:
+  - key: "app.stateful/component"
+    operator: "Equal"
+    value: "kafka-broker"
+    effect: NoSchedule
+  nodeSelector:
+    app.stateful/component: "kafka-broker"
+  pdb:
+    create: true
+    maxUnavailable: 1
+  resources:
+    limits:
+      cpu: 2
+      ephemeral-storage: 1Gi
+      memory: 4Gi
+    requests:
+      cpu: 2
+      ephemeral-storage: 1Gi
+      memory: 4Gi
+  logsDirs: /bitnami/kafka/logs
+  persistence:
+    size: 1000Gi
+  heapOpts: -Xmx4096m -Xms4096m
+  metrics:
+    kafka:
+      enabled: true
+      image:
+        tag: 1.6.0
+      certificatesSecret: client-pem
+      tlsCert: tls.crt
+      tlsKey: tls.key
+      tlsCaCert: ca.crt
+    jmx:
+      enabled: true
+      image:
+        tag: 0.17.0
+    serviceMonitor:
+      enabled: true
+      namespace: monitoring
+      labels:
+        release: monitoring-stack
+  zookeeper:
+    image:
+      tag: 3.8.0
+    replicaCount: 3
+    tls:
+      client:
+        enabled: false
+        auth: want
+        existingSecret: kafka-zookeeper-client-certs
+        passwordsSecretName: kafka-zookeeper-client-certs-pass
+    nodeAffinityPreset:
+      type: hard
+      key: cloud.google.com/compute-class
+      operator: In
+      values:
+        - Scale-Out
+    podAntiAffinityPreset: "hard"
+    topologySpreadConstraints:
+    - topologyKey: "topology.kubernetes.io/zone"
+      whenUnsatisfiable: DoNotSchedule
+      maxSkew: 1
+    tolerations:
+    - key: "app.stateful/component"
+      operator: "Equal"
+      value: "zookeeper"
+      effect: NoSchedule
+    nodeSelector:
+      app.stateful/component: "zookeeper"
+    pdb:
+      create: true
+      maxUnavailable: 1
+    resources:
+      limits:
+        cpu: 1
+        ephemeral-storage: 1Gi
+        memory: 2Gi
+      requests:
+        cpu: 1
+        ephemeral-storage: 1Gi
+        memory: 2Gi
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        namespace: monitoring
+        additionalLabels:
+          release: monitoring-stack
+gkeBackup:
+  enabled: true
+  protectedApplications:
+  - name: kafka
+    components:
+      - name: kafka-cluster
+        resourceKind: StatefulSet
+        resourceNames: ["kafka"]
+        strategy:
+          type: BackupAllRestoreAll
+          backupAllRestoreAll: {}
+  - name: zookeeper
+    components:
+      - name: zookeeper
+        resourceKind: StatefulSet
+        resourceNames: ["kafka-zookeeper"]
+        strategy:
+          type: BackupAllRestoreAll
+          backupAllRestoreAll: {}
+storageClass:
+  create: true
+  name: premium-rwo-retain-zonal
+  parameters:
+    type: pd-ssd
