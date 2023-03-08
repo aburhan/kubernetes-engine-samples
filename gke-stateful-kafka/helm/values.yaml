@@ -3,6 +3,8 @@ global:
 kafka:
   image:
     tag: 3.3.2
+  podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
   replicaCount: 3
   topologySpreadConstraints:
       - topologyKey: "topology.kubernetes.io/zone"
@@ -55,6 +57,8 @@ kafka:
   zookeeper:
     image:
       tag: 3.8.1
+    podAnnotations:
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
     replicaCount: 3
     nodeAffinityPreset:
       type: soft

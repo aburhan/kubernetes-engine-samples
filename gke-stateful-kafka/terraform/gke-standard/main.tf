@@ -12,7 +12,6 @@
 #See the License for the specific language governing permissions and
 #limitations under the License.
 # google_client_config and kubernetes provider must be explicitly specified like the following.
-
 data "google_client_config" "default" {}
 # [START artifactregistry_docker_repo]
 resource "google_artifact_registry_repository" "main" {
@@ -31,6 +30,7 @@ resource "google_artifact_registry_repository_iam_binding" "binding" {
     "serviceAccount:${module.kafka_us_central1.service_account}",
   ]
 }
+
 # [END artifactregistry_docker_repo]
 
 module "network" {
@@ -53,6 +53,9 @@ module "kafka_us_central1" {
   enable_private_nodes     = true
   master_ipv4_cidr_block   = "172.16.0.0/28"
   network_policy           = true
+  logging_enabled_components = ["SYSTEM_COMPONENTS","WORKLOADS"]
+  monitoring_enabled_components = ["SYSTEM_COMPONENTS"]
+  enable_cost_allocation = true
   cluster_autoscaling = {
     "autoscaling_profile": "OPTIMIZE_UTILIZATION",
     "enabled" : true,
@@ -144,7 +147,9 @@ module "gke-us-west1" {
   enable_private_nodes     = true
   master_ipv4_cidr_block   = "172.16.0.16/28"
   network_policy           = true
-  remove_default_node_pool = true
+  logging_enabled_components = ["SYSTEM_COMPONENTS","WORKLOADS"]
+  monitoring_enabled_components = ["SYSTEM_COMPONENTS"]
+  enable_cost_allocation = true
   cluster_autoscaling = {
     "autoscaling_profile": "OPTIMIZE_UTILIZATION",
     "enabled" : true,
