@@ -74,7 +74,7 @@ resource "google_container_cluster" "primary" {
       type = var.cluster_telemetry_type
     }
   }
-  # only one of logging/monitoring_service or logging/monitoring_config can be specified
+
   logging_service = local.cluster_telemetry_type_is_set || local.logmon_config_is_set ? null : var.logging_service
   dynamic "logging_config" {
     for_each = length(var.logging_enabled_components) > 0 ? [1] : []

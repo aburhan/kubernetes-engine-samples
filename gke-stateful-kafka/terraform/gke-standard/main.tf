@@ -28,7 +28,7 @@ resource "google_artifact_registry_repository_iam_binding" "binding" {
   repository = google_artifact_registry_repository.main.name
   role       = "roles/artifactregistry.reader"
   members = [
-    "serviceAccount:${module.gke-us-central1.service_account}",
+    "serviceAccount:${module.kafka_us_central1.service_account}",
   ]
 }
 # [END artifactregistry_docker_repo]
@@ -139,11 +139,12 @@ module "gke-us-west1" {
   ip_range_pods            = "ip-range-pods-us-west1"
   ip_range_services        = "ip-range-svc-us-west1"
   create_service_account   = false
-  service_account          = module.gke-us-central1.service_account
+  service_account          = module.kafka_us_central1.service_account
   enable_private_endpoint  = false
   enable_private_nodes     = true
   master_ipv4_cidr_block   = "172.16.0.16/28"
   network_policy           = true
+  remove_default_node_pool = true
   cluster_autoscaling = {
     "autoscaling_profile": "OPTIMIZE_UTILIZATION",
     "enabled" : true,
@@ -158,19 +159,8 @@ module "gke-us-west1" {
 
   node_pools = [
     {
-      name            = "pool-system"
-      autoscaling     = true
-      min_count       = 1
-      max_count       = 2
-      max_surge       = 1
-      max_unavailable = 0
-      machine_type    = "e2-standard-4"
-      node_locations  = "us-west1-a,us-west1-b,us-west1-c"
-      auto_repair     = true
-    },
-    {
       name            = "pool-kafka"
-      autoscaling     = false
+      autoscaling     = true
       max_surge       = 1
       max_unavailable = 0
       machine_type    = "e2-standard-8"
@@ -179,7 +169,7 @@ module "gke-us-west1" {
     },
     {
       name            = "pool-zookeeper"
-      autoscaling     = false
+      autoscaling     = true
       max_surge       = 1
       max_unavailable = 0
       machine_type    = "e2-standard-8"

@@ -1,21 +1,18 @@
 global:
   storageClass: premium-rwo-retain-zonal
 kafka:
+  image:
+    tag: 3.3.2
   replicaCount: 3
-  nodeAffinityPreset:
-    type: hard
-    key: cloud.google.com/compute-class
-    operator: In
-    values:
-      - Scale-Out
+  topologySpreadConstraints:
+      - topologyKey: "topology.kubernetes.io/zone"
+        whenUnsatisfiable: DoNotSchedule
+        maxSkew: 1
   tolerations:
   - key: "app.stateful/component"
     operator: "Equal"
     value: "kafka-broker"
     effect: NoSchedule
-  nodeSelector:
-    app.stateful/component: "kafka-broker"
-    iam.gke.io/gke-metadata-server-enabled: "true"
   pdb:
     create: true
     maxUnavailable: 1
@@ -56,13 +53,20 @@ kafka:
           cpu: "500m"
           memory: "0.5Gi"
   zookeeper:
+    image:
+      tag: 3.8.1
     replicaCount: 3
     nodeAffinityPreset:
-      type: hard
+      type: soft
       key: cloud.google.com/compute-class
       operator: In
       values:
         - Scale-Out
+    podAntiAffinityPreset: "hard"
+    topologySpreadConstraints:
+      - topologyKey: "topology.kubernetes.io/zone"
+        whenUnsatisfiable: DoNotSchedule
+        maxSkew: 1
     tolerations:
     - key: "app.stateful/component"
       operator: "Equal"
@@ -86,7 +90,7 @@ serviceAccount:
   create: true
   name: "ksa-kafka1"
   annotations:
-    iam.gke.io/gcp-service-account: "gsa-kafka@kafka-7.iam.gserviceaccount.com"
+    iam.gke.io/gcp-service-account: ""
 gkeBackup:
   enabled: true
   protectedApplications:

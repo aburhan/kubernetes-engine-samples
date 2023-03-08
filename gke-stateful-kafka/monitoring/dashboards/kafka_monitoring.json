@@ -321,7 +321,9 @@
                       "crossSeriesReducer": "REDUCE_NONE",
                       "perSeriesAligner": "ALIGN_RATE"
                     },
-                    "filter": "metric.type=\"prometheus.googleapis.com/jvm_gc_collection_seconds_count/summary\" resource.type=\"prometheus_target\""
+                    "filter": "metric.type=\"prometheus.googleapis.com/go_gc_duration_seconds_count/summary\" resource.type=\"prometheus_target\""
+    
+                   
                   }
                 }
               }
@@ -358,7 +360,8 @@
                       "crossSeriesReducer": "REDUCE_NONE",
                       "perSeriesAligner": "ALIGN_RATE"
                     },
-                    "filter": "metric.type=\"prometheus.googleapis.com/jvm_gc_collection_seconds_sum/summary:counter\" resource.type=\"prometheus_target\"",
+                    "filter": "metric.type=\"prometheus.googleapis.com/go_gc_duration_seconds_sum/summary:counter\" resource.type=\"prometheus_target\"",
+            
                     "secondaryAggregation": {
                       "alignmentPeriod": "60s",
                       "crossSeriesReducer": "REDUCE_NONE",
