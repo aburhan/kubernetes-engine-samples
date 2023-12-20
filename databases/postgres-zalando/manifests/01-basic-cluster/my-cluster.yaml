@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START gke_databases_postgres_zalando_manifests_01_cluster]
 apiVersion: "acid.zalan.do/v1"
 kind: postgresql
 metadata:
@@ -84,4 +85,4 @@ spec:
         value: "$(POSTGRES_USER)"
       - name: "DATA_SOURCE_PASS"
         value: "$(POSTGRES_PASSWORD)"
-
+# [END gke_databases_postgres_zalando_manifests_01_cluster]

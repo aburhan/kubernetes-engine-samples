@@ -1,2 +1,2 @@
 google-cloud-pubsub~=2.18.0
-google-auth~=2.24.0
+google-auth~=2.25.2
