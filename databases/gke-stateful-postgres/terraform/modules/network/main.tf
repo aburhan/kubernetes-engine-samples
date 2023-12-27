@@ -24,13 +24,13 @@ module "gcp-network" {
     {
       subnet_name           = "snet-gke-postgresql-${var.primary_region}"
       subnet_ip             = "10.0.0.0/17"
-      subnet_region         = var.primary_region
+      subnet_region         = var.region
       subnet_private_access = true
     },
     {
       subnet_name           = "snet-gke-postgresql-${var.backup_region}"
       subnet_ip             = "10.0.128.0/17"
-      subnet_region         = var.backup_region
+      subnet_region         = var.region
       subnet_private_access = true
     },
   ]
