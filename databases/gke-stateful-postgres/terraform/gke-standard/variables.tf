@@ -5,10 +5,10 @@ variable "project_id" {
 
 variable "primary_region" {
   description = "The project ID to host the cluster in"
-  default     = "us-central1"
+  default     = "us-east1"
 }
 
 variable "backup_region" {
   description = "The project ID to host the cluster in"
-  default     = "us-west1"
+  default     = "us-central1"
 }
