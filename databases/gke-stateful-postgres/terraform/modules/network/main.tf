@@ -22,21 +22,21 @@ module "gcp-network" {
 
   subnets = [
     {
-      subnet_name           = "snet-gke-postgresql-us-central1"
+      subnet_name           = "snet-gke-postgresql-${var.primary_region}"
       subnet_ip             = "10.0.0.0/17"
-      subnet_region         = "us-central1"
+      subnet_region         = var.primary_region
       subnet_private_access = true
     },
     {
-      subnet_name           = "snet-gke-postgresql-us-west1"
+      subnet_name           = "snet-gke-postgresql-${var.backup_region}"
       subnet_ip             = "10.0.128.0/17"
-      subnet_region         = "us-west1"
+      subnet_region         = var.backup_region
       subnet_private_access = true
     },
   ]
 
   secondary_ranges = {
-    ("snet-gke-postgresql-us-central1") = [
+    ("snet-gke-postgresql-${var.primary_region}") = [
       {
         range_name    = "ip-range-pods-db1"
         ip_cidr_range = "192.168.0.0/18"
@@ -46,7 +46,7 @@ module "gcp-network" {
         ip_cidr_range = "192.168.64.0/18"
       },
     ],
-    ("snet-gke-postgresql-us-west1") = [
+    ("snet-gke-postgresql-${var.backup_region}") = [
       {
         range_name    = "ip-range-pods-db2"
         ip_cidr_range = "192.168.128.0/18"

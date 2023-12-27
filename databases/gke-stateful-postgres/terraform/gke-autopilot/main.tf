@@ -33,9 +33,8 @@ module "gke-db1-autopilot" {
   project_id                      = var.project_id
   name                            = "cluster-db1"
   kubernetes_version              = "1.25" # Will be ignored if use "REGULAR" release_channel
-  region                          = "us-central1"
+  region                          = var.region
   regional                        = true
-  zones                           = ["us-central1-a", "us-central1-b", "us-central1-c"]
   network                         = module.network.network_name
   subnetwork                      = module.network.primary_subnet_name
   ip_range_pods                   = "ip-range-pods-db1"
@@ -55,9 +54,9 @@ module "gke-db2-autopilot" {
   project_id                      = var.project_id
   name                            = "cluster-db2"
   kubernetes_version              = "1.25" # Will be ignored if use "REGULAR" release_channel
-  region                          = "us-west1"
+  region                          = var.backup_region
   regional                        = true
-  zones                           = ["us-west1-a", "us-west1-b", "us-west1-c"]
+  zones                           = ""
   network                         = module.network.network_name
   subnetwork                      = module.network.secondary_subnet_name
   ip_range_pods                   = "ip-range-pods-db2"
