@@ -36,7 +36,7 @@ resource "google_artifact_registry_repository_iam_binding" "binding" {
 module "network" {
   source     = "../modules/network"
   project_id = var.project_id
-  region = var.region
+  region = var.primary_region
 }
 # [START gke_standard_private_regional_primary_cluster]
 module "gke-db1" {
