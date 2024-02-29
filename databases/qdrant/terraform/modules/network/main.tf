@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 # [START gke_qdrant_vpc_multi_region_network]
 module "gcp-network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 8.0.0"
+  version = "~> 8.1.0"
 
   project_id   = var.project_id
   network_name = "${var.cluster_prefix}-vpc"
@@ -42,6 +42,24 @@ module "gcp-network" {
       },
     ]
   }
+}
+
+module "firewall_rules" {
+  source       = "terraform-google-modules/network/google//modules/firewall-rules"
+  version = "~> 8.0"
+  project_id   = var.project_id
+  network_name = module.gcp-network.network_name
+
+  ingress_rules = [{
+    name                    = "allow-webhook"
+    description             = "open webhook port for statefulha operator"
+    source_ranges           = ["172.16.0.0/28",]
+    allow = [{
+      protocol = "tcp"
+      ports    = ["443","9443"]
+    }]
+    deny = []
+  }]
 }
 
 output "network_name" {

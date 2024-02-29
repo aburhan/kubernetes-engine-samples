@@ -1,24 +1,16 @@
-name: ai-ml-ci
+name: ai-ml-t5-model-serving-ci
 on:
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/ai-ml-ci.yml'
-      - 'ai-ml/**'
+      - '.github/workflows/ai-ml-t5-model-serving-ci.yml'
+      - 'ai-ml/t5-model-serving/**'
   pull_request:
     paths:
-      - '.github/workflows/ai-ml-ci.yml'
-      - 'ai-ml/**'
+      - '.github/workflows/ai-ml-t5-model-serving-ci.yml'
+      - 'ai-ml/t5-model-serving/**'
 jobs:
-  gke-a100-jax:
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-      - name: build tensorflow container for gke-a100-jax tutorial
-        run: |
-          cd ai-ml/gke-a100-jax
-          docker build --tag tensorflow .
   t5-model-serving:
     runs-on: ubuntu-22.04
     steps:

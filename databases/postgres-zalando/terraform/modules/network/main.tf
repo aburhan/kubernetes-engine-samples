@@ -15,7 +15,7 @@
 # [START gke_postgres_zalando_vpc_multi_region_network]
 module "gcp-network" {
   source  = "terraform-google-modules/network/google"
-  version = "~> 8.0.0"
+  version = "~> 8.1.0"
 
   project_id   = var.project_id
   network_name = "${var.cluster_prefix}-vpc"

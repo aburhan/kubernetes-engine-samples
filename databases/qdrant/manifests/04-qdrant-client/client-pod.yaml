@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START gke_databases_qdrant_04_client_pod]
 apiVersion: v1
 kind: Pod
 metadata:
@@ -24,11 +25,18 @@ spec:
   - name: qdrant-client
     image: python:3.11-slim-bookworm
     command: ["sleep", "3600"]
+    resources:
+      requests:
+        memory: "3500Mi"
+        cpu: "500m"
+      limits:
+        memory: "3500Mi"
+        cpu: "1"
     env:
     - name: APIKEY
       valueFrom:
         secretKeyRef:
-          name: qdrant-apikey
+          name: qdrant-database-apikey
           key: api-key
     volumeMounts:
     - name: books-dataset
@@ -37,4 +45,4 @@ spec:
   - name: books-dataset
     configMap:
       name: books-dataset
- 
+ # [END gke_databases_qdrant_04_client_pod]

@@ -51,7 +51,7 @@ FROM ${BASE_IMAGE}
 
 ENV PATH /home/model-server/.local/bin:$PATH
 ENV TS_CONFIG_FILE /home/model-server/config.properties
-# CPU inference will trhow a warning cuda warning (not error)
+# CPU inference will throw a warning cuda warning (not error)
 # Could not load dynamic library 'libnvinfer_plugin.so.7'
 # This is expected behaviour. see: https://stackoverflow.com/a/61137388
 ENV TF_CPP_MIN_LOG_LEVEL 2

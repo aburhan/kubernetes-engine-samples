@@ -63,6 +63,6 @@ spec:
           driver: gcsfuse.csi.storage.gke.io
           readOnly: false
           volumeAttributes:
-            bucketName: $BUCKET_NAME
+            bucketName: $GSBUCKET
             mountOptions: "implicit-dirs"
         

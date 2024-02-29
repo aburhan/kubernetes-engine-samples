@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,61 +14,53 @@
 
 # [START gke_qdrant_cloud_storage_bucket]
 module "cloud-storage" {
-  source  = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
-  version = "~> 5.0"
+  source        = "terraform-google-modules/cloud-storage/google//modules/simple_bucket"
+  version       = "~> 5.0"
 
-  name          = "${var.cluster_prefix}-training-docs"
+  name          = "${var.project_id}-${var.cluster_prefix}-training-docs"
   project_id    = var.project_id
   location      = var.region
   force_destroy = true
 }
 
 # use to set permissions with the dynamic SA
+
 module "cloud-storage-iam-bindings" {
   source          = "terraform-google-modules/iam/google//modules/storage_buckets_iam"
+  version         = "~> 7.0"
+
   storage_buckets = [module.cloud-storage.name]
-  mode = "authoritative"
-  bindings = {
+  mode            = "authoritative"
+  bindings        = {
     "roles/storage.objectViewer" = ["${module.service-account-bucket.iam_email}"]
-  }  
-  depends_on = [module.cloud-storage, module.service-account-bucket.iam_email]
-}
+  }
 
-# roles list https://cloud.google.com/eventarc/docs/gke/roles-permissions
-
-module "project-iam-bindings" {
-  source   = "terraform-google-modules/iam/google//modules/projects_iam"
-  projects = ["${var.project_id}"]
-  mode     = "additive"
-
-  bindings = {
-    "roles/pubsub.subscriber"       = ["${module.service-account-eventarc.iam_email}"]
-    "roles/pubsub.publisher"        = ["${module.service-account-eventarc.iam_email}"]
-    "roles/eventarc.admin"          = ["${module.service-account-eventarc.iam_email}"]
-    "roles/eventarc.eventReceiver"  = ["${module.service-account-eventarc.iam_email}"]
-    "roles/iam.serviceAccountUser"  = ["${module.service-account-eventarc.iam_email}"]
-    "roles/monitoring.metricWriter" = ["${module.service-account-eventarc.iam_email}"]
-    "roles/container.admin"         = ["${module.service-account-eventarc.iam_email}"]
-  }  
-  depends_on = [module.cloud-storage, module.service-account-eventarc.iam_email]
+  depends_on      = [module.cloud-storage, module.service-account-bucket.iam_email]
 }
 
 module "service-account-bucket" {
-  source       = "terraform-google-modules/service-accounts/google"
-  version      = "~> 3.0"
-  project_id   = var.project_id
-  names        = ["${var.cluster_prefix}-bucket-access"]
-  description  = "Service account to access the bucket with Qdrant training documents"
+  source          = "terraform-google-modules/service-accounts/google"
+  version         = "~> 4.0"
+
+  project_id      = var.project_id
+  names           = ["${var.cluster_prefix}-bucket-access"]
+  description     = "Service account to access the bucket with Qdrant training documents"
 }
 
-module "service-account-eventarc" {
-  source       = "terraform-google-modules/service-accounts/google"
-  version      = "~> 3.0"
-  project_id   = var.project_id
-  names        = ["${var.cluster_prefix}-eventarc-access"]
-  description  = "Service account to access the Pub/Sub Topic and GKE clusters for Eventarc"
-}
+module "project-iam-bindings-bucket" {
+  source     = "terraform-google-modules/iam/google//modules/projects_iam"
+  version    = "~> 7.0"
 
+  projects   = ["${var.project_id}"]
+  mode       = "additive"
+
+  bindings = {
+    "roles/aiplatform.user"          = ["serviceAccount:${var.cluster_prefix}-bucket-access@${var.project_id}.iam.gserviceaccount.com"] 
+    "roles/iam.workloadIdentityUser" = ["serviceAccount:${var.project_id}.svc.id.goog[qdrant/embed-docs-sa]"] 
+  } 
+
+  depends_on = [module.service-account-bucket]
+}
 
 output "bucket_name" {
   value = module.cloud-storage.name
@@ -76,10 +68,6 @@ output "bucket_name" {
 
 output "service_account_bucket_name" {
   value = module.service-account-bucket.email
-}
-
-output "service_account_eventarc_name" {
-  value = module.service-account-eventarc.email
 }
 
 # [END gke_qdrant_cloud_storage_bucket]

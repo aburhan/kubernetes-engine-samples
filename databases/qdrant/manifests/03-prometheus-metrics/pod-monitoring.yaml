@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# [START gke_databases_qdrant_03_prometheus_metrics_monitor]
 apiVersion: monitoring.googleapis.com/v1
 kind: PodMonitoring
 metadata:
@@ -19,9 +20,10 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: qdrant
-      component: metrics-proxy
+      app: qdrant
+      app.kubernetes.io/instance: qdrant-database
   endpoints:
   - port: 80
     interval: 30s
     path: / 
+# [END gke_databases_qdrant_03_prometheus_metrics_monitor]
