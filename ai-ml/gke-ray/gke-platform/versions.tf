@@ -23,15 +23,15 @@ terraform {
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.8.0"
+      version = "~> 2.12.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.18.1"
+      version = "2.26.0"
     }
     kubectl = {
       source  = "alekc/kubectl"
-      version = "2.0.1"
+      version = "2.0.4"
     }
   }
   provider_meta "google" {
