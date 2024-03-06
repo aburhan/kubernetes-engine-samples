@@ -12,19 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gke_databases_qdrant_01_regional_pd_ha_app]
+# [START gke_databases_postgresql_cloudnativepg_01_regional_pd_ha_app]
 kind: HighAvailabilityApplication
 apiVersion: ha.gke.io/v1alpha1
 metadata:
-  name: qdrant-ha-app
-  namespace: qdrant
+  name: pg-ha-app
+  namespace: pg-ns
 spec:
   resourceSelection:
     type: "Selector"
     resourceKind: StatefulSet
     selector:
       matchLabels:
-        app.kubernetes.io/instance: "qdrant-database"
+        app.component: pg-cluster
   policy:
     storageSettings:
       requireRegionalStorage: true
@@ -32,4 +32,4 @@ spec:
       forceDeleteStrategy: AfterNodeUnreachable
       afterNodeUnreachable:
         afterNodeUnreachableSeconds: 20 # 60 seconds total
-# [END gke_databases_qdrant_01_regional_pd_ha_app]
+# [END gke_databases_postgresql_cloudnativepg_01_regional_pd_ha_app]

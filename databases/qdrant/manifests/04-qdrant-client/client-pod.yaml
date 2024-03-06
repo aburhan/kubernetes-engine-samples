@@ -41,8 +41,13 @@ spec:
     volumeMounts:
     - name: books-dataset
       mountPath: /usr/local/dataset
+    - name: script-volume
+      mountPath: /usr/local/script
   volumes:
   - name: books-dataset
     configMap:
       name: books-dataset
+  - name: script-volume
+    configMap:
+      name: demo-app
  # [END gke_databases_qdrant_04_client_pod]
