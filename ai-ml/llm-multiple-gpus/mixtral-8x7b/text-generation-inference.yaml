@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# [START gke_aiml_llm_multi_gpus_falcon_40b_inference]
+# [START gke_aiml_llm_multi_gpus_mixtral_8x7b_deploy]
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,16 +32,16 @@ spec:
         image: ghcr.io/huggingface/text-generation-inference:1.4.3
         resources:
           requests:
-            cpu: "10"
-            memory: "60Gi"
+            cpu: "5"
+            memory: "40Gi"
             nvidia.com/gpu: "2"
           limits:
-            cpu: "10"
-            memory: "60Gi"
+            cpu: "5"
+            memory: "40Gi"
             nvidia.com/gpu: "2"
         env:
         - name: MODEL_ID
-          value: tiiuae/falcon-40b-instruct
+          value: mistralai/Mixtral-8x7B-Instruct-v0.1
         - name: NUM_SHARD
           value: "2"
         - name: PORT
@@ -68,8 +68,8 @@ spec:
                 storageClassName: "premium-rwo"
                 resources:
                   requests:
-                    storage: 175Gi
+                    storage: 100Gi
       nodeSelector:
         cloud.google.com/gke-accelerator: "nvidia-l4"
         cloud.google.com/gke-spot: "true"
-# [END gke_aiml_llm_multi_gpus_falcon_40b_inference]
+# [END gke_aiml_llm_multi_gpus_mixtral_8x7b_deploy]
