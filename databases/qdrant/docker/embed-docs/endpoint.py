@@ -42,7 +42,7 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 # Setup K8 configs
 config.load_incluster_config()
-
+# [START gke_databases_qdrant_docker_embed_endpoint_job]
 def kube_create_job_object(name, container_image, bucket_name, f_name, namespace="qdrant", container_name="jobcontainer", env_vars={}):
 
     body = client.V1Job(api_version="batch/v1", kind="Job")
@@ -64,7 +64,7 @@ def kube_create_job_object(name, container_image, bucket_name, f_name, namespace
 
     body.spec = client.V1JobSpec(backoff_limit=3, ttl_seconds_after_finished=60, template=template.template)
     return body
-
+# [END gke_databases_qdrant_docker_embed_endpoint_job]
 def kube_test_credentials():
     try: 
         api_response = api_instance.get_api_resources()

@@ -18,7 +18,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Qdrant
 from google.cloud import storage
 import os
-
+# [START gke_databases_qdrant_docker_embed_docs_retrieval]
 bucketname = os.getenv("BUCKET_NAME")
 filename = os.getenv("FILE_NAME")
 
@@ -26,12 +26,19 @@ storage_client = storage.Client()
 bucket = storage_client.bucket(bucketname)
 blob = bucket.blob(filename)
 blob.download_to_filename("/documents/" + filename)
+# [END gke_databases_qdrant_docker_embed_docs_retrieval]
 
+# [START gke_databases_qdrant_docker_embed_docs_split]
 loader = PyPDFLoader("/documents/" + filename)
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
 documents = loader.load_and_split(text_splitter)
+# [END gke_databases_qdrant_docker_embed_docs_split]
 
+# [START gke_databases_qdrant_docker_embed_docs_embed]
 embeddings = VertexAIEmbeddings("textembedding-gecko@001")
+# [END gke_databases_qdrant_docker_embed_docs_embed]
+
+# [START gke_databases_qdrant_docker_embed_docs_storage]
 qdrant = Qdrant.from_documents(
     documents, embeddings,
     collection_name=os.getenv("COLLECTION_NAME"),
@@ -40,7 +47,7 @@ qdrant = Qdrant.from_documents(
     shard_number=6,
     replication_factor=2
 )
-
+# [END gke_databases_qdrant_docker_embed_docs_storage]
 print(filename + " was successfully embedded") 
 print(f"# of vectors = {len(documents)}")
  

@@ -29,9 +29,15 @@ spec:
     spec:
       containers:
       - name: llm
-        image: ghcr.io/huggingface/text-generation-inference:1.1.0
+        image: ghcr.io/huggingface/text-generation-inference:1.4.3
         resources:
+          requests:
+            cpu: "10"
+            memory: "60Gi"
+            nvidia.com/gpu: "2"
           limits:
+            cpu: "10"
+            memory: "60Gi"
             nvidia.com/gpu: "2"
         env:
         - name: MODEL_ID
@@ -51,15 +57,24 @@ spec:
           - mountPath: /dev/shm
             name: dshm
           - mountPath: /data
-            name: data
+            name: ephemeral-volume
       volumes:
         - name: dshm
           emptyDir:
               medium: Memory
-        - name: data
-          emptyDir: {}
+        - name: ephemeral-volume
+          ephemeral:
+            volumeClaimTemplate:
+              metadata:
+                labels:
+                  type: ephemeral
+              spec:
+                accessModes: ["ReadWriteOnce"]
+                storageClassName: "premium-rwo"
+                resources:
+                  requests:
+                    storage: 150Gi
       nodeSelector:
-        cloud.google.com/gke-accelerator: nvidia-l4
-        cloud.google.com/gke-ephemeral-storage-local-ssd: "true"
+        cloud.google.com/gke-accelerator: "nvidia-l4"
         cloud.google.com/gke-spot: "true"
 # [END gke_aiml_llm_multi_gpus_llama2_70b_inference]
