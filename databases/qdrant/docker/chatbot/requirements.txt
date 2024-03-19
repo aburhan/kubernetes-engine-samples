@@ -1,8 +1,8 @@
-streamlit==1.31.1
+streamlit==1.32.0
 google-cloud-aiplatform==1.43.0
 langchain==0.1.11
-langchain-community==0.0.25
+langchain-community==0.0.27
 langchain-google-vertexai==0.1.0
-qdrant-client==1.7.3
+qdrant-client==1.8.0
 arxiv==2.1.0
 pymupdf==1.23.26
