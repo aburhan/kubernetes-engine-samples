@@ -1,9 +1,9 @@
-streamlit==1.31.1
-google-cloud-aiplatform==1.41.0
-langchain==0.1.7
-langchain-community==0.0.20
-langchain-google-vertexai==0.0.5
+streamlit==1.32.2
+google-cloud-aiplatform==1.44.0
+langchain==0.1.12
+langchain-community==0.0.28
+langchain-google-vertexai==0.1.1
 pgvector==0.2.5
 psycopg2-binary==2.9.9
 arxiv==2.1.0
-pymupdf==1.23.21
+pymupdf==1.23.26
