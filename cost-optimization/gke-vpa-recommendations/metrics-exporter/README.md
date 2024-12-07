@@ -1,4 +1,20 @@
-[
+#Instructions
+
+1. Build image
+
+  ```sh
+    export PROJECT_ID=gke-rightsize
+    export REGION=us-central1
+    export ZONE=us-central1-f
+    export IMAGE=$REGION-docker.pkg.dev/$PROJECT_ID/main/workload-vpa-recs-image:latest
+    gcloud auth configure-docker $REGION-docker.pkg.dev
+    gcloud builds submit metrics-exporter --region=$REGION --tag $IMAGE
+  ```
+
+2. Create table
+
+  ```json
+  [
   {
       "name": "run_date",
       "type": "DATE",
@@ -110,3 +126,11 @@
       "mode": "NULLABLE"
     }
   ]
+
+  ```
+
+3. Deploy Config Map and Cron job
+
+```sh
+  kubectl apply -f gke-vpa-recommendations/k8s/cronjob.yaml
+```

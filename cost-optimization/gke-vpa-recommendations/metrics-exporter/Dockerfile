@@ -1,6 +1,15 @@
-FROM python:3.13-alpine
+FROM python:3.12-slim
+
+# Set the working directory in the container
 WORKDIR /app
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+
+# Copy requirements.txt and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code
 COPY . .
-CMD ["python", "./main.py"] 
+
+# Set the default command to run your Python script
+CMD ["python", "main.py"]
+
