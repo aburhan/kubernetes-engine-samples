@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import logging
-import requests
+import aiohttp
 import pytz
 from datetime import datetime
 from google.auth.transport.requests import Request
@@ -22,13 +22,13 @@ from utils.config import MetricConfig, USER_AGENT, PROJECT_ID, DEFAULT_WINDOW_DA
 from utils.helpers import _process_time_series_data
 
 logger = logging.getLogger(__name__)
-def _fetch_timeseries_data(data: pd.DataFrame, namespace: str, metric_config: MetricConfig, start_datetime: datetime, end_datetime: datetime) -> pd.DataFrame:
+
+async def _fetch_timeseries_data(namespace: str, metric_config: MetricConfig, start_datetime: datetime, end_datetime: datetime) -> pd.DataFrame:
     """
-    Fetch time-series data for a single namespace and metric.
+    Fetch time-series data for a single namespace and metric asynchronously.
 
     Parameters:
         namespace (str): The namespace to fetch data for.
-        metric_name (str): The name of the metric.
         metric_config (MetricConfig): The configuration for the metric.
         start_datetime (datetime): The start time for the query.
         end_datetime (datetime): The end time for the query.
@@ -62,22 +62,23 @@ def _fetch_timeseries_data(data: pd.DataFrame, namespace: str, metric_config: Me
             'view': 'FULL',
         }
 
-        while True:
-            response = requests.get(base_url, headers=headers, params=params)
-            if response.status_code == 200:
-                data = response.json()
-                processed_data = _process_time_series_data(data.get("timeSeries", []), metric_config)
-                if not processed_data.empty:
-                    all_time_series.append(processed_data)
-                next_page_token = data.get('nextPageToken')
-                if not next_page_token:
-                    break
-                params['pageToken'] = next_page_token
-            else:
-                logger.error(f"API call failed: {response.status_code}, {response.text}")
-                break
+        async with aiohttp.ClientSession() as session:
+            while True:
+                async with session.get(base_url, headers=headers, params=params) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        processed_data = _process_time_series_data(data.get("timeSeries", []), metric_config)
+                        if not processed_data.empty:
+                            all_time_series.append(processed_data)
+                        next_page_token = data.get('nextPageToken')
+                        if not next_page_token:
+                            break
+                        params['pageToken'] = next_page_token
+                    else:
+                        logger.error(f"API call failed: {response.status}, {await response.text()}")
+                        break
 
         return pd.concat(all_time_series, ignore_index=True) if all_time_series else pd.DataFrame()
     except Exception as e:
-        logger.error(f"Error fetching data for metric '{metric_config.metric} ' in namespace '{namespace}': {e}")
+        logger.error(f"Error fetching data for metric '{metric_config.metric}' in namespace '{namespace}': {e}")
         return pd.DataFrame()
