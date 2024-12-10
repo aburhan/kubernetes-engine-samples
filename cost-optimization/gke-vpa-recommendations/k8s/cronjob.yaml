@@ -55,15 +55,16 @@ spec:
             - name: BIGQUERY_DATASET
               value: "gke_metrics_dataset"
             - name: BIGQUERY_TABLE
-              value: "gke_vpa_recommendations" 
+              value: "gke_vpa_recommendations"
             - name: MEMORY_RECOMMENDATION_BUFFER
               value: "1.10"
             - name: LOGGING_LEVEL
               value: info
             volumeMounts:
             - name: namespace-config-volume
-              mountPath: /config
+              mountPath: /app/namespace.txt
               readOnly: true
+              subPath: namespace.txt
             resources:
               limits:
                 cpu: 1000m
