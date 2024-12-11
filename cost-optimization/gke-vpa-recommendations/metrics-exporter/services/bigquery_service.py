@@ -20,7 +20,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def _check_latest_recommendation_date(project_id: str, table_id: str) -> bool:
+def _check_latest_recommendation_date(project_id: str, table_id: str, namespace:str) -> bool:
     """
     Checks if today's date matches the latest run_date in the BigQuery table.
     If there is no data in the table, or the latest run_date is not today's date,
@@ -40,13 +40,13 @@ def _check_latest_recommendation_date(project_id: str, table_id: str) -> bool:
         # Query to fetch the latest run_date from the BigQuery table
         sql = f"""
             SELECT MAX(run_date) as latest_run_date
-            FROM `{project_id}.{table_id}`
+            FROM `{project_id}.{table_id}` WHERE namespace_name = "{namespace}" 
         """
         fetch_latest_date = pandas_gbq.read_gbq(sql, project_id=project_id)
         
         # Check if the table has any data
         if fetch_latest_date.empty or fetch_latest_date['latest_run_date'].iloc[0] is None:
-            logger.info("No latest run_date found in the table. Proceeding as if data does not exist.")
+            logger.info(f"No latest run_date found in the table for {namespace}. Processing...")
             return True  # No data exists in the table
 
         # Convert the fetched run_date to a timestamp

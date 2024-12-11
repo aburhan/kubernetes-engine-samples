@@ -47,6 +47,10 @@ async def process_namespace(namespace, start_datetime, end_datetime):
     Process a single namespace: fetch metrics, merge dataframes, and write recommendations to BigQuery.
     """
     logger.info(f"Processing namespace: {namespace}")
+    # Check if today's recommendations already exist
+    if _check_latest_recommendation_date(PROJECT_ID, TABLE_ID, namespace):
+        logger.info("Recommendations for today's date already exist. Exiting program.")
+        return
     namespace_dataframes = []
 
     # Fetch data for each metric asynchronously
@@ -92,18 +96,13 @@ async def main_async():
         logger.error(f"Resource check failed: {e}")
         return
 
-    # Check if today's recommendations already exist
-    if _check_latest_recommendation_date(PROJECT_ID, TABLE_ID):
-        logger.info("Recommendations for today's date already exist. Exiting program.")
-        return
-
     # Get the start and end date range for querying metrics
     start_datetime, end_datetime = _get_start_date_for_query()
     logger.info(f"Creating recommendations for date range: {start_datetime} - {end_datetime}")
 
     # Read namespaces from the configmap
     #configmap_path = CONFIGMAP_PATH
-    namespaces = ['default']
+    namespaces = ['default','gmp-system']
     logging.info("Namespaces found %s", namespaces)
     if not namespaces:
         logger.info(f"No namespaces found in configmap {configmap_path}.")
