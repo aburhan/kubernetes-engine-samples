@@ -1,3 +1,20 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: namespace-config
+  namespace: default
+  labels:
+    app: deployment-1
+data:
+  PROJECT_ID: "cme-test-gke-monitoring"
+  CONFIG_PATH: "/app/config/namespace.txt"
+  BIGQUERY_DATASET: "gke_metrics_dataset"
+  BIGQUERY_TABLE: "gke_vpa_recommendations"
+  DEFAULT_WINDOW_DAYS: "14"
+  MEMORY_RECOMMENDATION_BUFFER: "1.10"
+
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -10,17 +27,17 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: workload-recommender
+          serviceAccountName: ksa-vpa-recs
           containers:
           - name: vpa-recommender-container
             image: us-central1-docker.pkg.dev/gke-rightsize/main/workload-vpa-recs-image:latest
             imagePullPolicy: Always
             command: ["python"]
-            args: ["/app/main.py"]  # Path to your Python script
+            args: ["/app/main.py"]
             env:
-            - name: CONFIG_PATH  # Path to the namespace file
+            - name: CONFIG_PATH
               value: "/app/config/namespace.txt"
-            - name: PROJECT_ID  # Read from ConfigMap
+            - name: PROJECT_ID
               valueFrom:
                 configMapKeyRef:
                   name: namespace-config
