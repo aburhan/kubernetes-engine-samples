@@ -102,8 +102,8 @@ async def main_async():
     logger.info(f"Creating recommendations for date range: {start_datetime} - {end_datetime}")
 
     # Read namespaces from the configmap
-    configmap_path = CONFIGMAP_PATH
-    namespaces = _read_namespaces_from_configmap(configmap_path)
+    #configmap_path = CONFIGMAP_PATH
+    namespaces = ['default']
     logging.info("Namespaces found %s", namespaces)
     if not namespaces:
         logger.info(f"No namespaces found in configmap {configmap_path}.")
