@@ -82,6 +82,11 @@ Bigquery schema
       "mode": "NULLABLE"
     },
     {
+      "name": "namespace_name",
+      "type": "STRING",
+      "mode": "NULLABLE"
+    },
+    {
       "name": "controller_name",
       "type": "STRING",
       "mode": "NULLABLE"
