@@ -74,6 +74,7 @@ def _process_time_series_data(all_time_series: list, metric_config: MetricConfig
                 ["resource", "labels", "project_id"],
                 ["resource", "labels", "location"],
                 ["resource", "labels", "cluster_name"],
+                ["resource", "labels", "namespace_name"],
                 metric_config.controller_name_label_path,
                 metric_config.controller_type_label_path,
                 metric_config.container_name_label_path,
@@ -90,6 +91,7 @@ def _process_time_series_data(all_time_series: list, metric_config: MetricConfig
                     "resource.labels.project_id",
                     "resource.labels.location",
                     "resource.labels.cluster_name",
+                    "resource.labels.namespace_name",
                     f"{metric_config.controller_name_label}",
                     f"{metric_config.controller_type_label}",
                     f"{metric_config.container_label}"
@@ -107,6 +109,7 @@ def _process_time_series_data(all_time_series: list, metric_config: MetricConfig
                     "resource.labels.project_id": "project_id",
                     "resource.labels.location": "location",
                     "resource.labels.cluster_name": "cluster_name",
+                    "resource.labels.namespace_name": "namespace_name",
                     f"{metric_config.container_label}": "container_name",
                     f"{metric_config.data_type}": "metric_value",
                     f"{metric_config.controller_name_label}": "controller_name",
@@ -135,7 +138,7 @@ def _merge_dataframes(dataframes: list) -> pd.DataFrame:
             df,
             on=[
                 "start_datetime", "end_datetime",
-                "project_id", "location", "cluster_name",
+                "project_id", "location", "cluster_name", "namespace_name",
                 "controller_name", "controller_type", "container_name"
             ],
             how="outer"  # Use outer join to handle different row counts
