@@ -1,84 +1,67 @@
-# Copyright 2024 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: namespace-config
-  namespace: default
-data:
-  namespace.txt: |
-    default
-    namespace2
-    namespace3
----
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: workload-recommendations
+  name: gke-vpa-recommender
+  namespace: default
 spec:
+  schedule: "0 0 * * *"  # Schedule to run daily at midnight
   concurrencyPolicy: Forbid
-  schedule: "0 0 * * *"
-  suspend: false
-  timeZone: America/Chicago
   jobTemplate:
-    metadata:
-      name: workload-recommendations
     spec:
       template:
-        metadata:
-          annotations:
-            cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
         spec:
+          serviceAccountName: workload-recommender
           containers:
-          - name: main
-            image: us-central1-docker.pkg.dev/[PROJECT]/main/[NEW_IMAGE]:latest
+          - name: vpa-recommender-container
+            image: us-central1-docker.pkg.dev/gke-rightsize/main/workload-vpa-recs-image:latest
             imagePullPolicy: Always
+            command: ["python"]
+            args: ["/app/main.py"]  # Path to your Python script
             env:
-            - name: PROJECT_ID
+            - name: CONFIG_PATH  # Path to the namespace file
+              value: "/app/config/namespace.txt"
+            - name: PROJECT_ID  # Read from ConfigMap
               valueFrom:
                 configMapKeyRef:
-                  name: [config_map_name]
-                  key: [config_map_key]
-            - name: DEFAULT_WINDOW_DAYS
-              value: "14"
+                  name: namespace-config
+                  key: PROJECT_ID
             - name: BIGQUERY_DATASET
-              value: "gke_metrics_dataset"
+              valueFrom:
+                configMapKeyRef:
+                  name: namespace-config
+                  key: BIGQUERY_DATASET
             - name: BIGQUERY_TABLE
-              value: "gke_vpa_recommendations"
+              valueFrom:
+                configMapKeyRef:
+                  name: namespace-config
+                  key: BIGQUERY_TABLE
+            - name: DEFAULT_WINDOW_DAYS
+              valueFrom:
+                configMapKeyRef:
+                  name: namespace-config
+                  key: DEFAULT_WINDOW_DAYS
             - name: MEMORY_RECOMMENDATION_BUFFER
-              value: "1.10"
-            - name: LOGGING_LEVEL
-              value: info
+              valueFrom:
+                configMapKeyRef:
+                  name: namespace-config
+                  key: MEMORY_RECOMMENDATION_BUFFER
             volumeMounts:
             - name: namespace-config-volume
-              mountPath: /app/namespace.txt
-              readOnly: true
+              mountPath: /app/config/namespace.txt
               subPath: namespace.txt
+              readOnly: true
             resources:
               limits:
-                cpu: 1000m
-                memory: 1Gi
-              requests:
                 cpu: 500m
-                memory: 1Gi
+                memory: 512Mi
+              requests:
+                cpu: 250m
+                memory: 256Mi
             securityContext:
               allowPrivilegeEscalation: false
-              runAsGroup: 1000
               runAsNonRoot: true
               runAsUser: 1000
           restartPolicy: Never
-          serviceAccountName: workload-recommendations
           volumes:
           - name: namespace-config-volume
             configMap:

@@ -14,6 +14,7 @@
 import pandas_gbq
 import datetime
 from google.cloud import bigquery
+from google.api_core.exceptions import NotFound
 import pandas as pd
 import logging
 
@@ -77,11 +78,12 @@ def _ensure_resources_exist(project_id: str, bq_table_id: str):
         RuntimeError: If the BigQuery table does not exist.
     """
     bigquery_client = bigquery.Client(project=project_id)
+    table_id = f"{project_id}.{bq_table_id}"
     try:
-        bigquery_client.get_table(bq_table_id)
-        logger.info(f"BigQuery table '{bq_table_id}' exists.")
-    except bigquery.exceptions.NotFound:
-        raise RuntimeError(f"The BigQuery table '{bq_table_id}' does not exist.")
+        bigquery_client.get_table(table_id)
+        logger.info(f"BigQuery table '{table_id}' exists.")
+    except NotFound:
+        raise RuntimeError(f"The BigQuery table '{table_id}' does not exist.")
     except Exception as e:
         raise RuntimeError(f"Unexpected error while checking BigQuery table: {e}")
 
@@ -98,13 +100,10 @@ def _write_dataframe_to_bigquery(df: pd.DataFrame, project_id: str, table_id: st
     Raises:
         RuntimeError: If the write operation fails.
     """
-    try:
-        pandas_gbq.to_gbq(df,
-            destination_table=table_id,
-            project_id=project_id,
-            if_exists='append'
-        )
-        logger.info(f"Successfully written DataFrame to BigQuery table: {table_id}")
-    except Exception as e:
-        logger.error(f"Error writing DataFrame to BigQuery: {e}")
-        raise RuntimeError(f"Failed to write DataFrame to BigQuery: {e}")
+
+    pandas_gbq.to_gbq(df,
+        destination_table=table_id,
+        project_id=project_id,
+        if_exists='append'
+    )
+    logger.info(f"Successfully written DataFrame to BigQuery table: {table_id}")

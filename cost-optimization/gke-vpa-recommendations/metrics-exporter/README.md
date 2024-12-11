@@ -1,8 +1,16 @@
 ## Instructions
+## Prereq
+1. A k8 service account bound to a GCP service account with metric following permissions
+    BigQuery Data Editor
+    BigQuery Data Viewer
+    BigQuery Job User
+    Monitoring Metric Writer
+    Monitoring Viewer
 
 1. Build image
 
   ```sh
+    cd kubernetes-engine-samples/cost-optimization/gke-vpa-recommendations
     export PROJECT_ID=gke-rightsize
     export REGION=us-central1
     export ZONE=us-central1-f
@@ -11,7 +19,35 @@
     gcloud builds submit metrics-exporter --region=$REGION --tag $IMAGE
   ```
 
-2. Create table
+2. Create the bigquery table
+
+```sh
+bq mk --table \
+  $PROJECT_ID:gke_metrics_dataset.gke-vpa-recommendations2 \
+  scripts/sql/bigquery_schema.json
+```
+
+3. Create config map
+
+  ```sh
+  kubectl create configmap namespace-config \
+  --namespace=default \
+  --from-literal=PROJECT_ID=gke-rightsize \
+  --from-literal=BIGQUERY_DATASET=gke_metrics_dataset \
+  --from-literal=BIGQUERY_TABLE=gke_vpa_recommendations \
+  --from-literal=DEFAULT_WINDOW_DAYS=14 \
+  --from-literal=MEMORY_RECOMMENDATION_BUFFER=1.10 \
+  --from-file=namespace.txt=/home/admin_/kubernetes-engine-samples/cost-optimization/gke-vpa-recommendations/metrics-exporter/namespace.txt
+
+  ```
+
+4. Update the image, serviceaccount and Deploy Cronjob
+
+  ```sh
+  kubectl apply -f k8s/cronjob.yaml
+  ```
+
+Bigquery schema
 
   ```json
   [

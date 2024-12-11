@@ -14,6 +14,7 @@
 
 import os
 import logging
+import sys
 import asyncio
 import pandas as pd
 from services.monitoring_serivce import _fetch_timeseries_data
@@ -22,7 +23,7 @@ from services.bigquery_service import (
     _check_latest_recommendation_date,
     _write_dataframe_to_bigquery,
 )
-from utils.config import MQL_QUERY, PROJECT_ID, TABLE_ID
+from utils.config import MQL_QUERY, PROJECT_ID, TABLE_ID, CONFIGMAP_PATH
 from utils.helpers import (
     _get_start_date_for_query,
     _read_namespaces_from_configmap,
@@ -30,12 +31,15 @@ from utils.helpers import (
     _build_vpa_workload_recommendations,
 )
 
-# Setup logging
+# Configure logging
 logging.basicConfig(
+    level=logging.DEBUG,  # Default logging level
     format="%(asctime)s [%(levelname)s] %(message)s",
-    level=logging.INFO,
-    handlers=[logging.StreamHandler()],
+    handlers=[
+        logging.StreamHandler(sys.stdout)  # Log everything to stdout
+    ]
 )
+
 logger = logging.getLogger(__name__)
 
 async def process_namespace(namespace, start_datetime, end_datetime):
@@ -57,11 +61,11 @@ async def process_namespace(namespace, start_datetime, end_datetime):
     # Process fetched data
     for idx, data in enumerate(fetch_results):
         if isinstance(data, Exception):
-            logger.warning(f"Error fetching data for metric {list(MQL_QUERY.keys())[idx]}: {data}")
+            logger.info(f"Error fetching data for metric {list(MQL_QUERY.keys())[idx]}: {data}")
         elif not data.empty:
             namespace_dataframes.append(data)
         else:
-            logger.warning(f"No data found for metric {list(MQL_QUERY.keys())[idx]} in namespace {namespace}")
+            logger.info(f"No data found for metric {list(MQL_QUERY.keys())[idx]} in namespace {namespace}")
 
     # Merge and build recommendations
     if namespace_dataframes:
@@ -74,7 +78,7 @@ async def process_namespace(namespace, start_datetime, end_datetime):
         )
         _write_dataframe_to_bigquery(vpa_recommendations_df, PROJECT_ID, TABLE_ID)
     else:
-        logger.warning(f"No data to merge for namespace '{namespace}'")
+        logger.info(f"No data to merge for namespace '{namespace}'")
 
 async def main_async():
     """
@@ -98,10 +102,11 @@ async def main_async():
     logger.info(f"Creating recommendations for date range: {start_datetime} - {end_datetime}")
 
     # Read namespaces from the configmap
-    configmap_path = os.getenv("CONFIGMAP_PATH", "namespace.txt")
+    configmap_path = CONFIGMAP_PATH
     namespaces = _read_namespaces_from_configmap(configmap_path)
+    logging.info("Namespaces found %s", namespaces)
     if not namespaces:
-        logger.warning(f"No namespaces found in configmap {configmap_path}.")
+        logger.info(f"No namespaces found in configmap {configmap_path}.")
         return
 
     # Process each namespace asynchronously
@@ -110,4 +115,7 @@ async def main_async():
 
 
 if __name__ == "__main__":
+    logging.info("Project ID set to %s",os.getenv("PROJECT_ID"))
+    logging.info("Files in director: \n")
+    logging.info(os.listdir("."))
     asyncio.run(main_async())

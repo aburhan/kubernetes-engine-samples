@@ -14,13 +14,13 @@
 import os
 
 USER_AGENT = "cloud-solutions/gke-wa-vpa-recommender-v1"
-CONFIGMAP_PATH="/config/namespace.txt"
+
 SECONDS_IN_A_DAY=86400
 
-PROJECT_ID = os.getenv("PROJECT_ID", None)
-
+PROJECT_ID = os.getenv("PROJECT_ID")
+CONFIGMAP_PATH=os.getenv("CONFIGMAP_PATH")
 BIGQUERY_DATASET = os.getenv("BIGQUERY_DATASET", "gke_metrics_dataset")
-BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE", "gke_vpa_recommendations")
+BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE", "gke-vpa-recommendations")
 TABLE_ID = f'{BIGQUERY_DATASET}.{BIGQUERY_TABLE}'
 
 
