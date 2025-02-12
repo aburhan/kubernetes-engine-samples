@@ -11,38 +11,55 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """ Config settings for HPA, CA USER """
-#Asset tracking
+
+# Asset Tracking
 USER_AGENT = "cloud-solutions/gke-wa-hpa-recommender-v1"
+
 class Config:
     """
     Configuration settings for HPA, CA, and other constants.
     Allows dynamic updates to the values.
     """
-    # The distance between metric data points in seconds
-    DISTANCE_BETWEEN_POINTS_SECONDS=60
-
-    # The threshold of clash between cpu forecasted and history usage
-    CPU_CLASH_COUNT_THRESHOLD = 0
-
-    DEFAULT_POD_STARTUPTIME=60
-
-    # Default HPA and Cluster Autoscaler timings
+    
+    # === Time & Processing Settings ===
+    DISTANCE_BETWEEN_POINTS_SECONDS = 60
+    DEFAULT_POD_STARTUPTIME = 60
     DEFAULT_HPA_PROCESSING_TIME = 45
     DEFAULT_CLUSTER_AUTOSCALER_STARTUP_TIME = 75
-
-    # HPA simulation configs and buffers
+    
+    # === HPA Simulation & Scaling ===
     HPA_SCALE_LIMIT = 2.3
     HPA_TARGET_BUFFER = 0.10
     HPA_SCALE_DOWN_DEFAULT_BEHAVIOUR_STEPS = 10
     EXTRA_HPA_BUFFER_FOR_MAX_REPLICAS = 1.00
     EXTRA_HPA_BUFFER_FOR_MEMORY_RECOMMENDATION = 1.05
     EXTRA_HPA_BUFFER_FOR_CPU_USAGE_CAPACITY = 1.05
+    
+    # === VPA Scaling ===
     EXTRA_VPA_BUFFER_FOR_MEMORY_RECOMMENDATION = 1.05
     EXTRA_VPA_BUFFER_FOR_CPU_USAGE_CAPACITY = 1.001
-
-
-    # Cloud Monitoring System Namespace to exclude
+    
+    # === CPU & Resource Limits ===
+    MIN_CPU_CORE_PROPOSED_VALUE = 0.010
+    COST_OF_GB_IN_CPUS = 7.5
+    MCPU_ROUNDING = 3
+    MIN_HPA_TARGET_CPU = 0.40
+    MAX_HPA_TARGET_CPU = 1.00
+    UNDERPROVISIONED_CPU_USAGE_THRESHOLD = 0.9
+    
+    # === Replica & Scaling Thresholds ===
+    CPU_CLASH_COUNT_THRESHOLD = 0
+    MIN_REC_REPLICAS = 3
+    REPLICA_THRESHOLD = 50
+    MIN_MAX_RATIO = 0.01  # The ratio of min/max replicas (1%)
+    
+    # === DCR (Dynamic Compute Resource) Settings ===
+    MIN_DCR_PERCENTILE_VALUE = 10
+    MAX_DCR_PERCENTILE_VALUE = 100
+    
+    # === Excluded Namespaces ===
     EXCLUDED_NAMESPACES = [
         "kube-system",
         "istio-system",
@@ -53,38 +70,6 @@ class Config:
         "gke-managed-filestorecsi",
         "gke-mcs",
     ]
-
-    # DCR percentile values
-    MIN_DCR_PERCENTILE_VALUE = 10
-    MAX_DCR_PERCENTILE_VALUE = 100
-
-    # DMR Min replicas proposed
-    MIN_REC_REPLICAS = 3
-
-    # the number of max replicas that will trigger logic to use  MIN_MAX_RATIO
-    # for min replicas
-    REPLICA_THRESHOLD=50
-
-    # The ratio of min/max replicas 20%
-    MIN_MAX_RATIO = 0.01
-
-
-    # Minimum value for CPU recommendations
-    MIN_CPU_CORE_PROPOSED_VALUE = 0.010
-
-    # Default cost ratio
-    COST_OF_GB_IN_CPUS = 7.5
-
-    # CPU Resource rounding
-    MCPU_ROUNDING = 3
-
-    # Min and Max HPA Target CPU
-    MIN_HPA_TARGET_CPU = 0.40
-    MAX_HPA_TARGET_CPU = 1.00
-
-    # Threshold for determining if CPU is under provisioned. If max requests is
-    # less than the 90th percentile of usage
-    UNDERPROVISIONED_CPU_USAGE_THRESHOLD=0.9
 
     @classmethod
     def set_value(cls, name: str, value):
@@ -148,4 +133,4 @@ class Config:
             if namespace and namespace not in cls.EXCLUDED_NAMESPACES:
                 cls.EXCLUDED_NAMESPACES.append(namespace)
             elif namespace in cls.EXCLUDED_NAMESPACES:
-                print(f"'{namespace}'is already in the exclusion list.")
+                print(f"'{namespace}' is already in the exclusion list.")

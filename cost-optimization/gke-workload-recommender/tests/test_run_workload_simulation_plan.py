@@ -21,10 +21,10 @@
 import unittest
 import pandas as pd
 import numpy as np
-from src.workloadrecommender.utils.models import (
+from workloadrecommender.utils.models import (
     WorkloadDetails
 )
-from src.workloadrecommender.run_workload_simulation_plan import (
+from workloadrecommender.run_workload_simulation_plan import (
     get_simulation_plans,
     _is_workload_balanced,
     _calculate_recommended_max_cpu_capacity,
@@ -33,7 +33,7 @@ from src.workloadrecommender.run_workload_simulation_plan import (
     convert_data_types,
     _get_proposed_memory_recommendation
 )
-from src.workloadrecommender.utils.config import Config
+from workloadrecommender.utils.config import Config
 
 class TestHPASimulationPlan(unittest.TestCase):
     """Unit tests for HPA simulation algorithms."""

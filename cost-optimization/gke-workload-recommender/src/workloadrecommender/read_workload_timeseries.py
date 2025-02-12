@@ -14,7 +14,6 @@
 
 '''Reading GKE metric data from Cloud monitoring'''
 from datetime import datetime
-import aiohttp
 from aiohttp import ClientResponseError
 import logging
 import pandas as pd
@@ -25,15 +24,15 @@ from google.auth.transport.requests import Request
 from google.auth import default
 import httpx
 
-from src.workloadrecommender.utils.models import (
+from workloadrecommender.utils.models import (
     MetricRequestParameter,
     WorkloadDetails,
 )
-from src.workloadrecommender.utils.config import (
+from workloadrecommender.utils.config import (
     Config,
     USER_AGENT
 )
-from src.workloadrecommender.utils.log import (
+from workloadrecommender.utils.log import (
     log_exec_time
 )
 

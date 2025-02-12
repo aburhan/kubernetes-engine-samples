@@ -18,13 +18,13 @@ import unittest
 from datetime import datetime
 import pandas as pd
 import pytz
-from src.workloadrecommender.read_workload_timeseries import (
+from workloadrecommender.read_workload_timeseries import (
     _build_workload_filter_query,
     get_workload_agg_timeseries,
     WorkloadDetails,
     MetricRequestParameter,
 )
-from src.workloadrecommender.utils.config import Config
+from workloadrecommender.utils.config import Config
 
 
 class TestUnitFunctions(unittest.TestCase):

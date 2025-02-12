@@ -21,13 +21,13 @@ import unittest
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from src.workloadrecommender.utils.config import Config
-from src.workloadrecommender.utils.models import (
+from workloadrecommender.utils.config import Config
+from workloadrecommender.utils.models import (
     WorkloadDetails,
     WorkloadPlan,
     WorkloadRecommendation
 )
-from src.workloadrecommender.run_workload_simulation_run import (
+from workloadrecommender.run_workload_simulation_run import (
     plan_and_run_simulation
 )
 

@@ -149,3 +149,88 @@ Authenticate using the Google Cloud SDK:
 
 ```bash
 gcloud auth application-default login
+```
+
+## Deployment Instructions
+
+1. Set configuration environment variables:
+
+```sh
+PROJECT_ID=gke-rightsize
+REGION=us-central1
+ARTIFACT_REPO=workloadrecommender-repo
+SERVICE_ACCOUNT_NAME="bq-service-account"
+SERVICE_ACCOUNT_EMAIL="$SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com"
+
+gcloud config set project $PROJECT_ID
+```
+
+1. Enable services:
+
+- Artifact Registry
+
+```sh
+gcloud services enable artifactregistry.googleapis.com
+
+```
+
+1. Install [Twine](https://pypi.org/project/twine/) is a tool for publishing Python packages:
+
+```sh
+pip install twine
+pip install build
+```
+
+1. Create the service account:
+
+```sh
+gcloud iam service-accounts create $SERVICE_ACCOUNT_NAME \
+    --display-name "BigQuery Service Account"
+
+# Assign IAM roles
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
+    --role="roles/bigquery.dataEditor"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
+    --role="roles/bigquery.dataViewer"
+
+# Print the service account email
+echo "Service Account Email: $SERVICE_ACCOUNT_EMAIL"
+``
+
+
+1. Deploy instructure:
+
+- Bigquery dataset and table
+- Artifact registry to store image
+- Service account for Bigquery
+
+```sh
+terraform init deploy
+terraform apply -var project_id=$PROJECT_ID -var=service_account_email=$SERVICE_ACCOUNT_EMAIL deploy
+```
+
+1. Set the pyton package repository:
+
+```sh
+gcloud config set artifacts/repository $ARTIFACT_REPO
+gcloud config set artifacts/location $REGION
+```
+
+1. Build the python package
+
+```sh
+python3 -m build
+python3 -m twine upload --repository-url https://$REGION-python.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/ dist/*
+```
+
+1. Run the following command to print the repository configuration to add to your Python project:
+
+```sh
+gcloud artifacts print-settings python \
+    --project=$PROJECT_ID\
+    --repository=workloadrecommender-repo \
+    --location=$REGION
+```

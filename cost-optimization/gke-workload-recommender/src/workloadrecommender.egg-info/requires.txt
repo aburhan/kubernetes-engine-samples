@@ -1,7 +1,0 @@
-pandas==2.2.2
-numpy==1.26.4
-aiohttp>=3.8.0
-asyncio==3.4.3
-requests==2.32.3
-google-api-core==2.22.0
-google-cloud-asset==3.27.0

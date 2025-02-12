@@ -94,3 +94,5 @@ output/
 .markdownlint.yaml
 
 test.py
+
+src/workloadrecommender.egg-info/SOURCES.txt

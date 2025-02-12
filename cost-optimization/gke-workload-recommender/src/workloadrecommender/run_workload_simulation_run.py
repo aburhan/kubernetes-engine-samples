@@ -17,7 +17,7 @@ from typing import List, Tuple, Optional, Dict
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import pandas as pd
 import numpy as np
-from src.workloadrecommender.utils.models import (
+from workloadrecommender.utils.models import (
     WorkloadPlan,
     WorkloadRecommendation,
     WorkloadDetails,

@@ -18,14 +18,14 @@ from unittest.mock import patch, Mock
 from google.api_core.exceptions import GoogleAPIError
 import pandas as pd
 
-from src.workloadrecommender.read_workload_startuptime import (
+from workloadrecommender.read_workload_startuptime import (
     get_workload_startup_time,
     _extract_pod_times,
     _fetch_workload_pods_details,
 )
-from src.workloadrecommender.utils.models import WorkloadDetails
+from workloadrecommender.utils.models import WorkloadDetails
 
-from src.workloadrecommender.utils.config import Config
+from workloadrecommender.utils.config import Config
 
 class TestWorkloadStartupTime(unittest.TestCase):
     """Test case for workload startup time."""
@@ -150,7 +150,7 @@ class TestWorkloadStartupTime(unittest.TestCase):
         self.assertIsNone(ready_time)
 
     @patch(
-        "src.workloadrecommender.read_workload_startuptime"
+        "workloadrecommender.read_workload_startuptime"
         "._fetch_workload_pods_details"
     )
     def test_get_workload_startup_time(self, mock_fetch_pods):
@@ -169,7 +169,7 @@ class TestWorkloadStartupTime(unittest.TestCase):
         )  # 120 + 45 + 75
 
     @patch(
-        "src.workloadrecommender.read_workload_startuptime."
+        "workloadrecommender.read_workload_startuptime."
         "_fetch_workload_pods_details"
     )
     def test_get_workload_startup_time_empty(self, mock_fetch_pods):
@@ -187,7 +187,7 @@ class TestWorkloadStartupTime(unittest.TestCase):
 
 
     @patch(
-        "src.workloadrecommender.read_workload_startuptime"
+        "workloadrecommender.read_workload_startuptime"
         "._fetch_workload_pods_details"
     )
     def test_quartile_calculation(self, mock_fetch_pods):
