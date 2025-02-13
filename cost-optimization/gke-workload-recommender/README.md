@@ -2,7 +2,7 @@
 
 Summary: Kubernetes deployments workload recommendations.
 
-Please refer to detailed documentation in the [/docs](/docs) folder
+Please refer to detailed documentation in the [docs](docs/README.md).
 
 ## Disclaimer
 
