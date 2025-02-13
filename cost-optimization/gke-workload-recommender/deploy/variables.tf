@@ -12,22 +12,17 @@ variable "region" {
 variable "dataset_id" {
   description = "BigQuery dataset ID"
   type        = string
-  default     = "workload_metrics"
+  default     = "gke_workload_metrics"
 }
 
 variable "table_id" {
   description = "BigQuery table ID"
   type        = string
-  default     = "hpa_forecast_results"
-}
-
-variable "service_account_email" {
-  description = "Email of the service account (must be created manually)"
-  type        = string
+  default     = "gke_workload_recommendations"
 }
 
 variable "artifact_registry_id" {
   description = "The ID of the Artifact Registry"
   type        = string
-  default     = "workload-forecast-registry"
+  default     = "workloadrecommender_repo"
 }

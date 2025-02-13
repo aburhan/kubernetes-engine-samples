@@ -15,8 +15,6 @@ provider "google" {
   region  = var.region
 }
 
-
-
 # ************************************************** #
 # Create BigQuery Dataset
 # ************************************************** #
@@ -76,7 +74,7 @@ resource "google_artifact_registry_repository" "python_registry" {
   project       = var.project_id
   location      = var.region
   repository_id = var.artifact_registry_id
-  format        = "PYTHON"  # ✅ Correct format for a Python package repository
+  format        = "PYTHON"
 
   description = "Artifact Registry for storing Python packages related to workload forecasting"
 }
