@@ -29,7 +29,7 @@ resource "google_bigquery_dataset" "gke_workload_metrics" {
 # Create BigQuery Table
 # ************************************************** #
 resource "google_bigquery_table" "workload_recommendations" {
-  dataset_id = google_bigquery_dataset.workload_metrics.dataset_id
+  dataset_id = google_bigquery_dataset.gke_workload_metrics.dataset_id
   table_id   = var.table_id
   project    = var.project_id
   deletion_protection = false

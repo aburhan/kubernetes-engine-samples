@@ -68,8 +68,6 @@ Set environment variables.
 export PROJECT_ID=gke-wa-testmonitoring
 export LOCATION=us-central1
 export ARTIFACT_REPO=workload-forecast-registry
-export SERVICE_ACCOUNT_NAME="gke-wa-service-account"
-export SERVICE_ACCOUNT_EMAIL="$SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com"
 
 gcloud config set project $PROJECT_ID
 ```
@@ -110,7 +108,7 @@ echo "Service Account Email: $SERVICE_ACCOUNT_EMAIL"
 
 ```sh
 terraform -chdir=deploy init
-terraform -chdir=deploy apply -var project_id=$PROJECT_ID -var=service_account_email=$SERVICE_ACCOUNT_EMAIL
+terraform -chdir=deploy apply -var project_id=$PROJECT_ID -var=region=$LOCATION
 ```
 
 1. Set the pyton package repository:
