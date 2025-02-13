@@ -1,8 +1,10 @@
 # Workload Recommender
 
-Summary: Kubernetes deployments workload recommendations.
+Summary: Kubernetes deployments workload resource recommendations.
 
-Please refer to detailed documentation in the [docs](docs/README.md).
+To run this solution refer to [deploy workloadrecommender](docs/README.md).
+
+For  detailed documentation details, review [documentation](src/README.md)
 
 ## Disclaimer
 
