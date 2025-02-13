@@ -15,25 +15,12 @@ provider "google" {
   region  = var.region
 }
 
-# ************************************************** #
-# Assign IAM Roles to Provided Service Account
-# ************************************************** #
-resource "google_project_iam_member" "bq_data_editor" {
-  project = var.project_id
-  role    = "roles/bigquery.dataEditor"
-  member  = "serviceAccount:${var.service_account_email}"
-}
 
-resource "google_project_iam_member" "bq_data_viewer" {
-  project = var.project_id
-  role    = "roles/bigquery.dataViewer"
-  member  = "serviceAccount:${var.service_account_email}"
-}
 
 # ************************************************** #
 # Create BigQuery Dataset
 # ************************************************** #
-resource "google_bigquery_dataset" "workload_metrics" {
+resource "google_bigquery_dataset" "gke_workload_metrics" {
   dataset_id  = var.dataset_id
   project     = var.project_id
   location    = var.region
@@ -43,7 +30,7 @@ resource "google_bigquery_dataset" "workload_metrics" {
 # ************************************************** #
 # Create BigQuery Table
 # ************************************************** #
-resource "google_bigquery_table" "hpa_forecast_results" {
+resource "google_bigquery_table" "workload_recommendations" {
   dataset_id = google_bigquery_dataset.workload_metrics.dataset_id
   table_id   = var.table_id
   project    = var.project_id

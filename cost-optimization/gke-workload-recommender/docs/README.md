@@ -38,29 +38,43 @@ maximize accuracy. For example:
 
 Ensure you have the following Google Cloud roles:
 
+-   `roles/resourcemanager.projectCreator`
 -   `roles/monitoring.viewer`
+-   `roles/bigquery.dataOwner`
+-   `roles/artifactregistry.creator`
+-   `roles/monitoring.admin`
 
-Authenticate using the Google Cloud SDK:
+### Create a new monitoring project
 
-```bash
-gcloud auth application-default login
-```
+For monitoring workloads across multiple projects, it's best to set up a separate
+monitoring project. Once you've created this project, you'll need to add your
+other projects to its metrics scope. This allows you to receive consolidated
+recommendations. Use the following instructions to
+[add projects to your metrics scope configuration](https://cloud.google.com/monitoring/settings/multiple-projects)
 
-## Deployment Instructions
-
-1. Set configuration environment variables:
+### Clone repository
 
 ```sh
-PROJECT_ID=gke-rightsize
-REGION=us-central1
-ARTIFACT_REPO=workload-forecast-registry
-SERVICE_ACCOUNT_NAME="bq-service-account"
-SERVICE_ACCOUNT_EMAIL="$SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com"
+git clone https://github.com/aburhan/kubernetes-engine-samples.git
+
+cd cost-optimization/gke-workload-recommender
+```
+
+### Project config
+
+Set environment variables.
+
+```sh
+export PROJECT_ID=gke-wa-testmonitoring
+export LOCATION=us-central1
+export ARTIFACT_REPO=workload-forecast-registry
+export SERVICE_ACCOUNT_NAME="gke-wa-service-account"
+export SERVICE_ACCOUNT_EMAIL="$SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com"
 
 gcloud config set project $PROJECT_ID
 ```
 
-1. Enable services:
+### Enable APIs
 
 - Artifact Registry
 
@@ -69,7 +83,7 @@ gcloud services enable artifactregistry.googleapis.com
 
 ```
 
-1. Create the service account:
+### Create the service account
 
 ```sh
 gcloud iam service-accounts create $SERVICE_ACCOUNT_NAME \
@@ -88,16 +102,15 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 echo "Service Account Email: $SERVICE_ACCOUNT_EMAIL"
 ``
 
-
-1. Deploy instructure:
+###  Deploy Terraform instructure
 
 - Bigquery dataset and table
 - Artifact registry to store image
-- Service account for Bigquery
+
 
 ```sh
-terraform init deploy
-terraform apply -var project_id=$PROJECT_ID -var=service_account_email=$SERVICE_ACCOUNT_EMAIL deploy
+terraform -chdir=deploy init
+terraform -chdir=deploy apply -var project_id=$PROJECT_ID -var=service_account_email=$SERVICE_ACCOUNT_EMAIL
 ```
 
 1. Set the pyton package repository:
