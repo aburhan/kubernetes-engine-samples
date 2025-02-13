@@ -7,17 +7,9 @@ reliability.
 
 ## Overview
 
-The solution evaluates GKE workloads using historical metric data. It
+Workloadrecommender evaluates GKE workloads using historical metric data. It
 simulates both HPA and VPA recommendations to determine the best fit for
-a given workload. HPA recommendations are prioritized, but if HPA is not
-suitable, the fallback is a static VPA recommendation.
-
-Users can specify the analysis period based on known workload patterns to
-maximize accuracy. For example:
-
--   **Short-term patterns:** Select 3 days if the workload operates
-    cyclically over that period.
--   **Unknown patterns:** Use a default period of 14 days.
+a given workload.
 
 > **Note:** This solution is currently tested only for Kubernetes
 > Deployments.
@@ -44,7 +36,7 @@ Ensure you have the following Google Cloud roles:
 -   `roles/artifactregistry.creator`
 -   `roles/monitoring.admin`
 
-### Create a new monitoring project
+## Create a new monitoring project
 
 For monitoring workloads across multiple projects, it's best to set up a separate
 monitoring project. Once you've created this project, you'll need to add your
@@ -66,7 +58,7 @@ Set environment variables.
 
 ```sh
 export PROJECT_ID=gke-wa-testmonitoring
-export LOCATION=us-central1
+export REGION=us-central1
 export ARTIFACT_REPO=workload-forecast-registry
 
 gcloud config set project $PROJECT_ID
@@ -78,47 +70,25 @@ gcloud config set project $PROJECT_ID
 
 ```sh
 gcloud services enable artifactregistry.googleapis.com
-
 ```
 
-### Create the service account
-
-```sh
-gcloud iam service-accounts create $SERVICE_ACCOUNT_NAME \
-    --display-name "BigQuery Service Account"
-
-# Assign IAM roles
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
-    --role="roles/bigquery.dataEditor"
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-    --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
-    --role="roles/bigquery.dataViewer"
-
-# Print the service account email
-echo "Service Account Email: $SERVICE_ACCOUNT_EMAIL"
-``
-
-###  Deploy Terraform instructure
+### Deploy Terraform instructure
 
 - Bigquery dataset and table
 - Artifact registry to store image
 
-
 ```sh
 terraform -chdir=deploy init
-terraform -chdir=deploy apply -var project_id=$PROJECT_ID -var=region=$LOCATION
+terraform -chdir=deploy apply -var project_id=$PROJECT_ID -var=region=$REGION -var artifact_registry_id=$ARTIFACT_REPO
 ```
 
-1. Set the pyton package repository:
+### Set the pyton package repository:
 
 ```sh
 gcloud config set artifacts/repository $ARTIFACT_REPO
-gcloud config set artifacts/location $REGION
 ```
 
-1. Install required packages to build and publish the Python package:
+### Install required packages to build and publish the Python package:
 
 ```sh
 pip3 install twine
@@ -127,6 +97,6 @@ python3 -m build
 python3 -m twine upload --repository-url https://$REGION-python.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/ dist/*
 ```
 
-1. Run the following command to print the repository configuration to add to your Python project:
+## Running Python Notebook
 
-
+Open the [notebook](https://github.com/aburhan/kubernetes-engine-samples/blob/workloadrecommender/cost-optimization/gke-workload-recommender/docs/workloadrecommender_notebook.ipynb) and run the workload recommender
