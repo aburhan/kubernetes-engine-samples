@@ -99,4 +99,4 @@ python3 -m twine upload --repository-url https://$REGION-python.pkg.dev/$PROJECT
 
 ## Running Python Notebook
 
-Open the [notebook](https://github.com/aburhan/kubernetes-engine-samples/blob/workloadrecommender/cost-optimization/gke-workload-recommender/docs/workloadrecommender_notebook.ipynb) and run the workload recommender
+Open the [notebook](workloadrecommender_notebook.ipynb) and run the workload recommender
