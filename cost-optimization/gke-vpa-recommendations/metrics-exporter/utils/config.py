@@ -17,7 +17,12 @@ USER_AGENT = "cloud-solutions/gke-wa-vpa-recommender-v1"
 
 SECONDS_IN_A_DAY=86400
 
-PROJECT_ID = os.getenv("PROJECT_ID")
+# Set PROJECT_ID, defaulting to the environment variable if not set
+PROJECT_ID = os.getenv("PROJECT_ID") or os.getenv("GOOGLE_CLOUD_PROJECT")
+
+if not PROJECT_ID:
+    raise ValueError("PROJECT_ID is not set and GOOGLE_CLOUD_PROJECT is not available in the environment.")
+    logger.error("Using PROJECT_ID: %s",{PROJECT_ID})
 CONFIGMAP_PATH=os.getenv("CONFIGMAP_PATH")
 BIGQUERY_DATASET = os.getenv("BIGQUERY_DATASET", "gke_metrics_dataset")
 BIGQUERY_TABLE = os.getenv("BIGQUERY_TABLE", "gke-vpa-recommendations")

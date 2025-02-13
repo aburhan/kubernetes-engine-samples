@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package bigquery_schema;
+
+
+// Main message for the schema
+message BigQueryRecord {
+  string run_date = 1;
+  string start_datetime = 2; 
+  string end_datetime = 3; 
+  string project_id = 4; // STRING
+  string location = 5; // STRING
+  string cluster_name = 6; // STRING
+  string namespace_name = 7; // STRING
+  string controller_name = 8; // STRING
+  string controller_type = 9; // STRING
+  string container_name = 10; // STRING
+  float cpu_mcore_usage = 11; // FLOAT
+  float cpu_requested_mcores = 12; // FLOAT
+  float cpu_limit_mcores = 13; // FLOAT
+  float memory_mib_usage_max = 14; // FLOAT
+  float memory_requested_mib = 15; // FLOAT
+  float memory_limit_mib = 16; // FLOAT
+  float cpu_request_utilization = 17; // FLOAT
+  float memory_request_utilization = 18; // FLOAT
+  float cpu_requested_recommendation = 19; // FLOAT
+  float cpu_limit_recommendation = 20; // FLOAT
+  float memory_requested_recommendation = 21; // FLOAT
+  float memory_limit_recommendation = 22; // FLOAT
+  float priority = 23; // FLOAT
+}
