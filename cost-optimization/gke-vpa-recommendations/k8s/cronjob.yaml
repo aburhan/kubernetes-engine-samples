@@ -8,7 +8,7 @@ metadata:
     app: deployment-1
 data:
   PROJECT_ID: "cme-test-gke-monitoring"
-  CONFIG_PATH: "/app/config/namespace.txt"
+  CONFIGMAP_PATH: "/app/config/namespace.txt"
   BIGQUERY_DATASET: "gke_metrics_dataset"
   BIGQUERY_TABLE: "gke_vpa_recommendations"
   DEFAULT_WINDOW_DAYS: "14"
