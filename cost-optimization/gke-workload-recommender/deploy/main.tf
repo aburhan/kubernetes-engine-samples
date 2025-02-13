@@ -5,6 +5,9 @@ terraform {
       version = "~> 6.20"
     }
   }
+  provider_meta "google" {
+      module_name = "cloud-solutions/gke-hpa-recommendations-v1.1"
+  }
 }
 
 provider "google" {
@@ -30,7 +33,7 @@ resource "google_project_iam_member" "bq_data_viewer" {
 # ************************************************** #
 # Create BigQuery Dataset
 # ************************************************** #
-resource "google_bigquery_dataset" "gke-workload_metrics" {
+resource "google_bigquery_dataset" "workload_metrics" {
   dataset_id  = var.dataset_id
   project     = var.project_id
   location    = var.region
@@ -40,41 +43,53 @@ resource "google_bigquery_dataset" "gke-workload_metrics" {
 # ************************************************** #
 # Create BigQuery Table
 # ************************************************** #
-resource "google_bigquery_table" "workload_recommendations" {
+resource "google_bigquery_table" "hpa_forecast_results" {
   dataset_id = google_bigquery_dataset.workload_metrics.dataset_id
   table_id   = var.table_id
   project    = var.project_id
   deletion_protection = false
 
   schema = jsonencode([
-    { name = "run_date", type = "DATETIME", mode = "NULLABLE" },
+    { name = "project_id", type = "STRING", mode = "NULLABLE" },
+    { name = "cluster_name", type = "STRING", mode = "NULLABLE" },
+    { name = "location", type = "STRING", mode = "NULLABLE" },
+    { name = "namespace", type = "STRING", mode = "NULLABLE" },
+    { name = "controller_name", type = "STRING", mode = "NULLABLE" },
+    { name = "container_name", type = "STRING", mode = "NULLABLE" },
+    { name = "analysis_period_start", type = "DATETIME", mode = "NULLABLE" },
+    { name = "analysis_period_end", type = "DATETIME", mode = "NULLABLE" },
     { name = "window_begin", type = "DATETIME", mode = "NULLABLE" },
-    { name = "site_id", type = "STRING", mode = "NULLABLE" },
-    { name = "vertical_id", type = "STRING", mode = "NULLABLE" },
     { name = "num_replicas_at_usage_window", type = "INTEGER", mode = "NULLABLE" },
     { name = "sum_containers_cpu_request", type = "FLOAT", mode = "NULLABLE" },
     { name = "sum_containers_cpu_usage", type = "FLOAT", mode = "NULLABLE" },
+    { name = "forecast_sum_cpu_up_and_running", type = "FLOAT", mode = "NULLABLE" },
     { name = "sum_containers_mem_request_mi", type = "FLOAT", mode = "NULLABLE" },
     { name = "sum_containers_mem_usage_mi", type = "FLOAT", mode = "NULLABLE" },
-    { name = "forecast_replicas_up_and_running", type = "INTEGER", mode = "NULLABLE" },
-    { name = "forecast_sum_cpu_up_and_running", type = "FLOAT", mode = "NULLABLE" },
     { name = "forecast_sum_mem_up_and_running", type = "FLOAT", mode = "NULLABLE" },
-    { name = "forecast_cpu_saving", type = "FLOAT", mode = "NULLABLE" },
+    { name = "forecast_replicas_up_and_running", type = "INTEGER", mode = "NULLABLE" },
     { name = "forecast_mem_saving_mi", type = "FLOAT", mode = "NULLABLE" },
-    { name = "avg_saving_in_cpus", type = "FLOAT", mode = "NULLABLE" },
+    { name = "forecast_cpu_saving", type = "FLOAT", mode = "NULLABLE" },
+    { name = "recommended_cpu_request", type = "FLOAT", mode = "NULLABLE" },
+    { name = "recommended_mem_request_and_limits_mi", type = "FLOAT", mode = "NULLABLE" },
+    { name = "recommended_cpu_limit_or_unbounded", type = "FLOAT", mode = "NULLABLE" },
+    { name = "recommended_min_replicas", type = "INTEGER", mode = "NULLABLE" },
+    { name = "recommended_max_replicas", type = "INTEGER", mode = "NULLABLE" },
+    { name = "recommended_hpa_target_cpu", type = "FLOAT", mode = "NULLABLE" },
+    { name = "max_usage_slope_up_ratio", type = "FLOAT", mode = "NULLABLE" },
+    { name = "workload_e2e_startup_latency_rows", type = "INTEGER", mode = "NULLABLE" },
     { name = "method", type = "STRING", mode = "NULLABLE" }
   ])
 }
 
 # ************************************************** #
-# Create Artifact Registry for Docker Images
+# Create Artifact Registry for Python Packages
 # ************************************************** #
-resource "google_artifact_registry_repository" "docker_registry" {
+resource "google_artifact_registry_repository" "python_registry" {
   provider      = google
   project       = var.project_id
   location      = var.region
   repository_id = var.artifact_registry_id
-  format        = "python"
+  format        = "PYTHON"  # ✅ Correct format for a Python package repository
 
-  description = "Python repository for workload forecasting"
+  description = "Artifact Registry for storing Python packages related to workload forecasting"
 }

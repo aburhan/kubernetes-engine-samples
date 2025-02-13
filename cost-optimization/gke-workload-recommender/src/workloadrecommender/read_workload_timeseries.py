@@ -484,6 +484,6 @@ def get_workload_agg_timeseries(
         merged_df['avg_container_mem_request_mi'] = latest_mem_request
 
         return _aggregate_data(merged_df)
-
+    
     # Use asyncio.run to execute the internal async function
     return asyncio.run(_async_get_workload_agg_timeseries())

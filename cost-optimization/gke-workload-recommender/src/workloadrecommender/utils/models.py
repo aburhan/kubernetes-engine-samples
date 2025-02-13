@@ -68,6 +68,8 @@ class WorkloadDetails:
     controller_name: str
     controller_type: Literal["Deployment"]
     container_name: str
+    min_replicas: int = 0
+    max_replicas: int = 0
     _scheduled_to_ready_seconds: float = 0.0  # Renamed to internal attribute
 
     def __post_init__(self):

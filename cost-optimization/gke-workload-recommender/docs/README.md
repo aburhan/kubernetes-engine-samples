@@ -158,7 +158,7 @@ gcloud auth application-default login
 ```sh
 PROJECT_ID=gke-rightsize
 REGION=us-central1
-ARTIFACT_REPO=workloadrecommender-repo
+ARTIFACT_REPO=workload-forecast-registry
 SERVICE_ACCOUNT_NAME="bq-service-account"
 SERVICE_ACCOUNT_EMAIL="$SERVICE_ACCOUNT_NAME@$PROJECT_ID.iam.gserviceaccount.com"
 
@@ -172,13 +172,6 @@ gcloud config set project $PROJECT_ID
 ```sh
 gcloud services enable artifactregistry.googleapis.com
 
-```
-
-1. Install [Twine](https://pypi.org/project/twine/) is a tool for publishing Python packages:
-
-```sh
-pip install twine
-pip install build
 ```
 
 1. Create the service account:
@@ -219,18 +212,15 @@ gcloud config set artifacts/repository $ARTIFACT_REPO
 gcloud config set artifacts/location $REGION
 ```
 
-1. Build the python package
+1. Install required packages to build and publish the Python package:
 
 ```sh
+pip3 install twine
+pip3 install build
 python3 -m build
 python3 -m twine upload --repository-url https://$REGION-python.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/ dist/*
 ```
 
 1. Run the following command to print the repository configuration to add to your Python project:
 
-```sh
-gcloud artifacts print-settings python \
-    --project=$PROJECT_ID\
-    --repository=workloadrecommender-repo \
-    --location=$REGION
-```
+

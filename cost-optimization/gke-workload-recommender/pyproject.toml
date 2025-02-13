@@ -4,14 +4,14 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "workloadrecommender"
-version = "0.0.38"
+version = "0.0.41"
 authors = [
     { name="Google LLC", email="ameenahb@google.com" }
 ]
 
 description = "Workload Recommender Core Library"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 license = {text = "The Unlicense"}
 
@@ -23,10 +23,12 @@ classifiers = [
 
 dependencies = [
     "pandas==2.2.2",
+    "pyarrow<19.0.0",
     "numpy==1.26.4",
     "aiohttp>=3.8.0",
     "asyncio==3.4.3",
     "requests==2.32.3",
     "google-api-core==2.22.0",
-    "google-cloud-asset==3.27.0"
+    "google-cloud-asset==3.27.0",
+    "google_cloud_bigquery==3.29.0"
 ]
