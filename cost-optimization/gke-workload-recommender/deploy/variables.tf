@@ -24,5 +24,5 @@ variable "table_id" {
 variable "artifact_registry_id" {
   description = "The ID of the Artifact Registry"
   type        = string
-  default     = "workloadrecommender_repo"
+  default     = "workloadrecommender-repo"
 }
