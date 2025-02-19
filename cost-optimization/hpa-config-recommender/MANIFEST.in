@@ -1,7 +1,7 @@
 exclude OWNERS
 exclude buildtest.dockerfile
-exclude docs/workload-recommender.ipynb
+exclude docs/hpa-config-recommender.ipynb
+exclude test/
 exclude SOLUTION.yaml
-include src/workloadrecommender/version.py
 include requirements.in
 include LICENSE

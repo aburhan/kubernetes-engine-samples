@@ -53,14 +53,14 @@
 # %% id="JfOibFN8AIHj"
 # ## Step 3: Import Required Modules and Define Workload Details
 # Import the necessary modules and define your Kubernetes workload details.
-from workloadrecommender.hpa_simulation_run import(
+from hpaconfigrecommender.hpa_simulation_run import(
         run_hpa_simulation_plans
 )
-from workloadrecommender.hpa_simulation_plan import(
+from hpaconfigrecommender.hpa_simulation_plan import(
         get_hpa_simulation_plans
 )
-from workloadrecommender.utils.config import HPAConfig
-from workloadrecommender.utils.models import (
+from hpaconfigrecommender.utils.config import HPAConfig
+from hpaconfigrecommender.utils.models import (
     WorkloadDetails
 )
 hpa_config = HPAConfig()

@@ -17,13 +17,13 @@ import unittest
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from workloadrecommender.utils.config import Config
-from workloadrecommender.utils.models import (
+from hpaconfigrecommender.utils.config import Config
+from hpaconfigrecommender.utils.models import (
     WorkloadDetails,
     WorkloadPlan,
     WorkloadRecommendation
 )
-from workloadrecommender.run_workload_simulation_run import (
+from hpaconfigrecommender.run_workload_simulation_run import (
     plan_and_run_simulation
 )
 

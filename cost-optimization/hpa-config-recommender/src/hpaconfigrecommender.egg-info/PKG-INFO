@@ -1,0 +1,35 @@
+Metadata-Version: 2.2
+Name: hpaconfigrecommender
+Version: 0.0.41
+Summary: Workload Recommender Core Library
+Author-email: Google LLC <ameenahb@google.com>
+License: The Unlicense
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pandas==2.2.2
+Requires-Dist: pyarrow<19.0.0
+Requires-Dist: numpy==1.26.4
+Requires-Dist: aiohttp>=3.8.0
+Requires-Dist: asyncio==3.4.3
+Requires-Dist: requests==2.32.3
+Requires-Dist: google-api-core==2.22.0
+Requires-Dist: google-cloud-asset==3.27.0
+Requires-Dist: google_cloud_bigquery==3.29.0
+
+# Workload Recommender
+
+Summary: Kubernetes deployments workload resource recommendations.
+
+To run this solution refer to [deploy hpa congif recommender](docs/README.md).
+
+For  detailed documentation details, review [documentation](src/README.md)
+
+## Disclaimer
+
+License: Apache 2.0
+
+This is not an official Google product.

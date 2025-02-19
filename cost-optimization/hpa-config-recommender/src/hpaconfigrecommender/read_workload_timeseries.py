@@ -24,15 +24,15 @@ from google.auth.transport.requests import Request
 from google.auth import default
 import httpx
 
-from workloadrecommender.utils.models import (
+from hpaconfigrecommender.utils.models import (
     MetricRequestParameter,
     WorkloadDetails,
 )
-from workloadrecommender.utils.config import (
+from hpaconfigrecommender.utils.config import (
     Config,
     USER_AGENT
 )
-from workloadrecommender.utils.log import (
+from hpaconfigrecommender.utils.log import (
     log_exec_time
 )
 

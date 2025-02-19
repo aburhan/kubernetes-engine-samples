@@ -20,12 +20,12 @@ from typing import List, Tuple, Optional, Dict
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import pandas as pd
 import numpy as np
-from workloadrecommender.utils.models import (
+from hpaconfigrecommender.utils.models import (
     WorkloadPlan,
     WorkloadRecommendation,
     WorkloadDetails,
 )
-from workloadrecommender.run_workload_simulation_plan import (
+from hpaconfigrecommender.run_workload_simulation_plan import (
     get_simulation_plans, convert_data_types
 )
 from .utils.config import (

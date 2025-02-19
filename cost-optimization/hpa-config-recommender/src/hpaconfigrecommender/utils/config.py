@@ -13,10 +13,7 @@
 # limitations under the License.
 
 """ Config settings for HPA, CA USER """
-
-# Asset Tracking
 USER_AGENT = "cloud-solutions/gke-wa-hpa-recommender-v1"
-
 class Config:
     """
     Configuration settings for HPA, CA, and other constants.

@@ -2,7 +2,7 @@
 
 Summary: Kubernetes deployments workload resource recommendations.
 
-To run this solution refer to [deploy workloadrecommender](docs/README.md).
+To run this solution refer to [deploy hpa congif recommender](docs/README.md).
 
 For  detailed documentation details, review [documentation](src/README.md)
 

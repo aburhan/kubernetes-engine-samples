@@ -20,14 +20,14 @@ import google.auth
 from google.api_core.gapic_v1.client_info import ClientInfo
 from google.api_core.exceptions import GoogleAPIError
 from google.auth.exceptions import DefaultCredentialsError
-from workloadrecommender.utils.models import (
+from hpaconfigrecommender.utils.models import (
     WorkloadDetails,
     PodDetails
 )
-from workloadrecommender.utils.config import (
+from hpaconfigrecommender.utils.config import (
     Config,  USER_AGENT
 )
-from workloadrecommender.utils.log import (
+from hpaconfigrecommender.utils.log import (
     log_exec_time
 )
 

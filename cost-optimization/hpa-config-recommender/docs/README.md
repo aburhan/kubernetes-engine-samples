@@ -49,7 +49,7 @@ recommendations. Use the following instructions to
 ```sh
 git clone https://github.com/aburhan/kubernetes-engine-samples.git
 
-cd cost-optimization/gke-workload-recommender
+cd cost-optimization/hpa-config-recommender
 ```
 
 ### Project config
@@ -82,21 +82,28 @@ terraform -chdir=deploy init
 terraform -chdir=deploy apply -var project_id=$PROJECT_ID -var=region=$REGION -var artifact_registry_id=$ARTIFACT_REPO
 ```
 
-### Set the pyton package repository:
+### Set the pyton package repository
 
 ```sh
 gcloud config set artifacts/repository $ARTIFACT_REPO
 ```
 
-### Install required packages to build and publish the Python package:
+#### Configure authentication to Artifact registry
 
 ```sh
-pip3 install twine
-pip3 install build
-python3 -m build
-python3 -m twine upload --repository-url https://$REGION-python.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/ dist/*
+pip install keyring
+pip install keyrings.google-artifactregistry-auth
+```
+
+### Install required packages to build and publish the Python package
+
+```sh
+pip install twine==6.0.1
+pip install build
+python -m build
+python -m twine upload --repository-url https://$REGION-python.pkg.dev/$PROJECT_ID/$ARTIFACT_REPO/ dist/*
 ```
 
 ## Running Python Notebook
 
-Open the [notebook](workloadrecommender_notebook.ipynb) and run the workload recommender
+Open the [notebook](notebook.ipynb) and run the workload recommender

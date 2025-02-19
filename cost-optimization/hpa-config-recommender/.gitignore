@@ -98,7 +98,7 @@ output/
 test.py
 
 ### other files to ignore
-src/workloadrecommender.egg-info/SOURCES.txt
+src/hpaconfigrecommender.egg-info/SOURCES.txt
 dist/
 tests/__pycache__/
 __pycache__/
