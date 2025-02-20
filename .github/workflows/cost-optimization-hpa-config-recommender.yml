@@ -33,8 +33,8 @@ jobs:
       - name: Build and run tests
         run: |
           cd ../
-          python3 -m venv.venv
-          source.venv/bin/activate
+          python3 -m venv venv
+          source venv/bin/activate
           python3 -m pip install --upgrade pip
           python3 -m pip install --no-cache-dir --use-pep517 -e.[dev]
           pytest  # Run pytest
