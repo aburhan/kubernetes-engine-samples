@@ -36,6 +36,7 @@ jobs:
           python3 -m venv venv
           source venv/bin/activate
           pip3 install build
+          pip3 install pytest
           python3 -m build
           pip3 install dist/hpaconfigrecommender-*.tar.gz
           pytest  # Run pytest
