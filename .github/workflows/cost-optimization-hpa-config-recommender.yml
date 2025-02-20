@@ -1,16 +1,16 @@
-name: cost-optimization-gke-vpa-recommendations-ci
+name: cost-optimization-hpa-config-recommender-ci
 
 on:
   push:
     branches:
       - main
     paths:
-      - '.github/workflows/cost-optimization-gke-vpa-recommendations-ci.yml'
-      - 'cost-optimization/gke-vpa-recommendations/**'
+      - '.github/workflows/cost-optimization-hpa-config-recommender-ci.yml'
+      - 'cost-optimization/hpa-config-recommender/**'
   pull_request:
     paths:
-      - '.github/workflows/cost-optimization-gke-vpa-recommendations-ci.yml'
-      - 'cost-optimization/gke-vpa-recommendations/**'
+      - '.github/workflows/cost-optimization-hpa-config-recommender-ci.yml'
+      - 'cost-optimization/hpa-config-recommender/**'
 
 jobs:
   build_and_test:
@@ -20,13 +20,13 @@ jobs:
 
       - name: Validate terraform
         run: |
-          cd cost-optimization/gke-workload-recommender/deploy
+          cd cost-optimization/hpa-config-recommender/deploy
           terraform init
           terraform validate
 
       - name: Build and test buildtest Docker image
         run: |
-          cd cost-optimization/gke-workload-recommender
+          cd cost-optimization/hpa-config-recommender
           docker build \
             --build-arg PROJECT_SUBDIRECTORY=. \
             -t buildtest .
