@@ -59,7 +59,7 @@ Set environment variables.
 ```sh
 export PROJECT_ID=gke-wa-testmonitoring
 export REGION=us-central1
-export ARTIFACT_REPO=workload-forecast-registry
+export ARTIFACT_REPO=hpa-config-recommender-repo
 
 gcloud config set project $PROJECT_ID
 ```
@@ -67,9 +67,11 @@ gcloud config set project $PROJECT_ID
 ### Enable APIs
 
 - Artifact Registry
+- Cloud Asset
 
 ```sh
-gcloud services enable artifactregistry.googleapis.com
+gcloud services enable artifactregistry.googleapis.com \
+    cloudasset.googleapis.com
 ```
 
 ### Deploy Terraform instructure

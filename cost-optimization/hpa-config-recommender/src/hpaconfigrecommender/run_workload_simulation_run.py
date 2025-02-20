@@ -419,6 +419,7 @@ def _analyze_configuration_plans(
     highest_avg_saving = -np.inf
     best_rec = None
     best_analysis_df = pd.DataFrame()
+    all_simulation_df = []
 
     # Use ProcessPoolExecutor for multiprocessing
     with ProcessPoolExecutor() as executor:
@@ -444,6 +445,7 @@ def _analyze_configuration_plans(
 
             # Evaluate results
             avg_saving = analysis_df['avg_saving_in_cpus'].mean()
+            all_simulation_df.append(analysis_df)
             if avg_saving > highest_avg_saving:
                 highest_avg_saving = avg_saving
                 best_rec = rec
@@ -451,9 +453,13 @@ def _analyze_configuration_plans(
 
     logger.info(best_rec)
 
-    return best_analysis_df, best_rec, reasons
+    return best_analysis_df, best_rec, reasons, all_simulation_df
 
-def _write_to_bigquery(analysis_df: pd.DataFrame, rec: WorkloadRecommendation):
+def write_to_bigquery(analysis_df: pd.DataFrame,
+                       rec: WorkloadRecommendation,
+                       bq_project_id: str,
+                       bq_dataset_id: str,
+                       bq_table_id: str):
     """
     Writes the given DataFrame to BigQuery, ensuring only the required columns are sent.
 
@@ -507,17 +513,13 @@ def _write_to_bigquery(analysis_df: pd.DataFrame, rec: WorkloadRecommendation):
 
     # Filter DataFrame to contain only the required columns
     analysis_df = analysis_df[required_bq_columns]
-    print(analysis_df.columns)
 
-    # Define BigQuery details
-    project_id = "gke-rightsize"  # Update with your actual project ID
-    dataset_id = "workload_metrics"
-    table_id = "hpa_forecast_results"
-    full_table_id = f"{project_id}.{dataset_id}.{table_id}"
+
+    full_table_id = f"{bq_project_id}.{bq_dataset_id}.{bq_table_id}"
 
     # Configure BigQuery client with custom user-agent
     client_info = ClientInfo(user_agent=USER_AGENT)
-    bq_client = bigquery.Client(project=project_id, client_info=client_info)
+    bq_client = bigquery.Client(project=bq_project_id, client_info=client_info)
 
     try:
         # Load DataFrame into BigQuery
@@ -556,7 +558,7 @@ def run_simulation_plans(
             - An WorkloadRecommendation or None if no data is found.
     '''
     reasons = {}
-    analysis_df, rec, reason = _analyze_configuration_plans(
+    analysis_df, rec, reason, all_simulations_df = _analyze_configuration_plans(
         workload_details.config,
         plans,
         workload_details,
@@ -581,9 +583,8 @@ def run_simulation_plans(
     rec.workload_details.max_replicas=(
         analysis_df['num_replicas_at_usage_window'].max()
         )
-    _write_to_bigquery(analysis_df, rec)
 
-    return analysis_df, rec, reason
+    return analysis_df, rec, reason, all_simulations_df
 
 @log_exec_time(logger)
 def plan_and_run_simulation(
@@ -611,11 +612,11 @@ def plan_and_run_simulation(
         logger.info('No plans exists for workload %s', workload_details)
         reasons['No plans exists'] = reason
         return pd.DataFrame(), None, reasons
-    analysis_df, savings_summary , reason = run_simulation_plans(
+    analysis_df, savings_summary , reason, all_simulation_dfs = run_simulation_plans(
         plans,
         workload_details,
         workload_df
     )
-    return analysis_df, savings_summary, reasons
+    return analysis_df, savings_summary, reasons, all_simulation_dfs
 
 

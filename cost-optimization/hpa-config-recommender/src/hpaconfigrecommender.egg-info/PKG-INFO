@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: hpaconfigrecommender
-Version: 0.0.41
+Version: 0.0.42
 Summary: Workload Recommender Core Library
 Author-email: Google LLC <ameenahb@google.com>
 License: The Unlicense
