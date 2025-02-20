@@ -23,7 +23,7 @@ from hpaconfigrecommender.utils.models import (
     WorkloadPlan,
     WorkloadRecommendation
 )
-from hpaconfigrecommender.run_workload_simulation_run import (
+from hpaconfigrecommender.run_workload_simulation import (
     plan_and_run_simulation
 )
 
@@ -60,7 +60,7 @@ class TestPlanAndRunHPASimulation(unittest.TestCase):
 
         workload_df = pd.read_csv(workload_df_path)
 
-        _, summary, _ = plan_and_run_simulation(
+        _, summary, _, _ = plan_and_run_simulation(
             self.workload_details,
             workload_df
         )

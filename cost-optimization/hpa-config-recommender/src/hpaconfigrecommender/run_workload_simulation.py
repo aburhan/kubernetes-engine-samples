@@ -13,6 +13,7 @@
 # limitations under the License.
 
 ''' Simulation Run - Code to Run recommendations plans and simulations'''
+from multiprocessing import Pool
 import logging
 from google.cloud import bigquery
 from google.api_core.gapic_v1.client_info import ClientInfo
@@ -25,7 +26,7 @@ from hpaconfigrecommender.utils.models import (
     WorkloadRecommendation,
     WorkloadDetails,
 )
-from hpaconfigrecommender.run_workload_simulation_plan import (
+from hpaconfigrecommender.plan_workload_simulation import (
     get_simulation_plans, convert_data_types
 )
 from .utils.config import (
@@ -424,21 +425,9 @@ def _analyze_configuration_plans(
     # Use ProcessPoolExecutor for multiprocessing
     with ProcessPoolExecutor() as executor:
         # Submit all tasks to the executor
-        futures = {}
-        for args in args_list:
-            future = executor.submit(_process_plan, *args)
-            futures[future] = args[0].method
-
-        # Process results as they complete
-        for future in as_completed(futures):
-            method = futures[future]  # Get the recommendations method for logging
-            try:
-                analysis_df, rec, reason = future.result()
-            except (ValueError, KeyError, RuntimeError) as e:
-                logger.error('Error in plan %s: %s', method, e)
-                reasons['Exception caught'] = e
-                continue
-
+        results = executor.map(_process_plan, *zip(*args_list)) 
+        for result in results:
+            analysis_df, rec, reason = result  # Unpack the result tuple
             if analysis_df is None:
                 reasons[rec.plan.method] = reason
                 continue

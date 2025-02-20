@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hpaconfigrecommender"
-version = "0.0.42"
+version = "0.0.45"
 authors = [
     { name="Google LLC", email="ameenahb@google.com" }
 ]
@@ -25,6 +25,7 @@ dependencies = [
     "pyarrow<19.0.0",
     "numpy==1.26.4",
     "aiohttp>=3.8.0",
+    "httpx>=0.28.1",
     "asyncio==3.4.3",
     "requests==2.32.3",
     "google-api-core==2.22.0",

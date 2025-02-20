@@ -20,27 +20,19 @@ jobs:
 
       - name: Validate terraform
         run: |
-          cd cost-optimization/hpa-config-recommender/deploy
-          terraform init
-          terraform validate
+          cd cost-optimization/hpa-config-recommender/
+          terraform -chdir=deploy init
+          terraform -chdir=deploy validate
 
-      - name: Build and test buildtest Docker image
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Build and run tests
         run: |
-          cd cost-optimization/hpa-config-recommender
-          docker build \
-            --build-arg PROJECT_SUBDIRECTORY=. \
-            -t buildtest .
-
-          docker run buildtest \
-            python3 -m venv .venv && \
-            . .venv/bin/activate && \
-            python3 -m pip install --upgrade pip && \
-            python3 -m pip install --no-cache-dir --use-pep517 -e . && \
-            python3 -m unittest discover -s . -p 'test_*.py'
-
-      - name: Check buildtest exit code
-        run: |
-          if [ $? -ne 0 ]; then
-            echo "buildtest container failed. Exiting with error."
-            exit 1
-          fi
+          python3 -m venv.venv
+          source.venv/bin/activate
+          python3 -m pip install --upgrade pip
+          python3 -m pip install --no-cache-dir --use-pep517 -e.[dev]
+          pytest  # Run pytest

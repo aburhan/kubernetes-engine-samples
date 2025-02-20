@@ -20,7 +20,7 @@ import numpy as np
 from hpaconfigrecommender.utils.models import (
     WorkloadDetails
 )
-from hpaconfigrecommender.run_workload_simulation_plan import (
+from hpaconfigrecommender.plan_workload_simulation import (
     get_simulation_plans,
     _is_workload_balanced,
     _calculate_recommended_max_cpu_capacity,
