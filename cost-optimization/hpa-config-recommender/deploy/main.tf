@@ -20,7 +20,7 @@ terraform {
     }
   }
   provider_meta "google" {
-      module_name = "cloud-solutions/gke-hpa-recommendations-v1.1"
+      module_name = "cloud-solutions/gke-wa-hpa-recommender-v1.1"
   }
 }
 
