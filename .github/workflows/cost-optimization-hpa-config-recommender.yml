@@ -21,6 +21,7 @@ jobs:
       - name: Validate terraform
         run: |
           cd cost-optimization/hpa-config-recommender/deploy
+          ls
           terraform init
           terraform validate
 
