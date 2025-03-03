@@ -49,7 +49,7 @@ recommendations. Use the following instructions to
 ```sh
 git clone https://github.com/aburhan/kubernetes-engine-samples.git
 
-cd cost-optimization/hpa-config-recommender
+cd kubernetes-engine-samples/cost-optimization/hpa-config-recommender
 ```
 
 ### Project config
