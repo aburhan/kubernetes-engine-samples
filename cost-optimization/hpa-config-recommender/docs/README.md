@@ -57,9 +57,9 @@ cd kubernetes-engine-samples/cost-optimization/hpa-config-recommender
 Set environment variables.
 
 ```sh
-export PROJECT_ID=[YOUR PROJECT] #@params: string
-export REGION=us-central1 #@params: string
-export ARTIFACT_REPO=hpa-config-recommender-repo #@params: string
+export PROJECT_ID=[YOUR PROJECT] #@param {type: "string"}
+export REGION=us-central1 #@param {type: "string"}
+export ARTIFACT_REPO=hpa-config-recommender-repo #@param {type: "string"}
 
 gcloud config set project $PROJECT_ID
 ```
