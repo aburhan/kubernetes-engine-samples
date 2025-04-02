@@ -1,0 +1,59 @@
+steps:
+# Build and push 1-gke-namespace-metric-builder
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - build
+    - '-t'
+    - 'us-central1-docker.pkg.dev/${PROJECT_ID}/main/gke-namespace-builder-image'
+    - './1-gke-namespace-metric-builder'
+  id: 'build-gke-namespace-metric-builder'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - push
+    - 'us-central1-docker.pkg.dev/${PROJECT_ID}/main/gke-namespace-builder-image'
+  id: 'push-gke-namespace-metric-builder'
+
+# Build and push 2-cloud-monitoring-to-pubsub
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - build
+    - '-t'
+    - 'us-central1-docker.pkg.dev/${PROJECT_ID}/main/cloud-monitoring-to-pubsub-image'
+    - './2-cloud-monitoring-to-pubsub'
+  id: 'build-cloud-monitoring-to-pubsub'
+
+- name: 'gcr.io/cloud-builders/docker'
+  args:
+    - push
+    - 'us-central1-docker.pkg.dev/${PROJECT_ID}/main/cloud-monitoring-to-pubsub-image'
+  id: 'push-cloud-monitoring-to-pubsub'
+
+# Optional: Deploy to GKE after pushing
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   args:
+#     - apply
+#     - '-f'
+#     - './k8s/gke-namespace-metric-builder-job.yaml'
+#   env:
+#     - 'CLOUDSDK_COMPUTE_REGION=${_REGION}'
+#     - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
+
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   args:
+#     - apply
+#     - '-f'
+#     - './k8s/cloud-monitoring-to-pubsub-job.yaml'
+#   env:
+#     - 'CLOUDSDK_COMPUTE_REGION=${_REGION}'
+#     - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER_NAME}'
+
+# Define substitutions
+#substitutions:
+#  _ARTIFACT_REGISTRY: 'us-docker.pkg.dev'  # Update for multi-region
+#  _REGION: 'us-central1'
+#  _REPO_NAME: 'gke-monitoring-repo'
+#  _CLUSTER_NAME: 'gke-monitoring-cluster'
+#images:
+#  - '${_ARTIFACT_REGISTRY}/${_REGION}/${_REPO_NAME}/gke-namespace-metric-builder:${SHORT_SHA}'
+#  - '${_ARTIFACT_REGISTRY}/${_REGION}/${_REPO_NAME}/cloud-monitoring-to-pubsub:${SHORT_SHA}'

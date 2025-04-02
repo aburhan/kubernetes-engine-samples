@@ -1,0 +1,58 @@
+{
+  "type": "record",
+  "name": "Avro",
+  "fields": [
+    {
+      "name": "metric",
+      "type": "string"
+    },
+    {
+      "name": "container_name",
+      "type": "string"
+    },
+    {
+      "name": "location",
+      "type": "string"
+    },
+    {
+      "name": "namespace_name",
+      "type": "string"
+    },
+    {
+      "name": "cluster_name",
+      "type": "string"
+    },
+    {
+      "name": "project_id",
+      "type": "string"
+    },
+    {
+      "name": "startTime",
+      "type": "string"
+    },
+    {
+      "name": "endTime",
+      "type": "string"
+    },
+    {
+      "name": "value",
+      "type": "double"
+    },
+    {
+      "name": "valueUnits",
+      "type": "string"
+    },
+    {
+      "name": "replicas",
+      "type": "string"
+    },
+    {
+      "name": "controller_name",
+      "type": "string"
+    },
+    {
+      "name": "controller_type",
+      "type": "string"
+    }
+  ]
+}

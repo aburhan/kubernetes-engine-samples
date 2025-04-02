@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: gke-namespace-metric-builder-cronjob
+  namespace: default
+spec:
+  schedule: "0 0 * * *"  # Run at midnight every day
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: gke-namespace-metric-builder
+        spec:
+          restartPolicy: Never
+          serviceAccountName: metrics-job
+          containers:
+          - name: gke-namespace-metric-builder-container
+            image: us-central1-docker.pkg.dev/gke-vpa-optimization/main/gke-namespace-builder-image:latest
+            envFrom:
+              - configMapRef:
+                  name: job-env-config
+            resources:
+              requests:
+                cpu: "500m"
+                memory: "512Mi"
+              limits:
+                cpu: "1"
+                memory: "1Gi"

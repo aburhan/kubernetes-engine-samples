@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloud-monitoring-to-pubsub-job
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: cloud-monitoring-to-pubsub
+  template:
+    metadata:
+      labels:
+        app: cloud-monitoring-to-pubsub
+    spec:
+      serviceAccountName: metrics-job
+      containers:
+      - name: cloud-monitoring-to-pubsub
+        image: us-central1-docker.pkg.dev/gke-vpa-optimization/main/cloud-monitoring-to-pubsub-image:latest
+        envFrom:
+            - configMapRef:
+                name: job-env-config
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
