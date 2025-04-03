@@ -6,12 +6,13 @@
 export PROJECT_ID="your-gcp-project-id"
 export DATASET="gke-metric-dataset"
 export TABLE="metrics"
-export TOPIC1="gke-namespace"
-export TOPIC2="gke-metric-to-bq"
-export SUBSCRIPTION1="gke-namespace-sub"
-export SUBSCRIPTION2="gke-metric-to-bq-sub"
-export SCHEMA_FILE="schemas/pubsub_schema.json"
-export CLUSTER_NAME="autopilot-cluster-1"
+export PUBSUB_TOPIC_ID="gke-namespace"
+export DESTINATION_PUBSUB_TOPIC_ID="gke-metric-to-bq"
+export PUBSUB_SUBSCRIPTION_ID="gke-namespace-sub"
+export BIGQUERY_SUBSCRIPTION_ID="gke-metric-to-bq-sub"
+export PUBSUB_SCHEMA_FILE="schemas/pubsub_schema.json"
+export BIGQUERY_SCHEMA_FILE="schemas/bigquery_schema.json"
+export CLUSTER_NAME="your-cluster"
 export REGION="us-central1"
 
 gcloud config set project $PROJECT_ID
@@ -32,8 +33,8 @@ Use this if you have a BigQuery schema (`schema.json`):
 ```bash
 bq mk --table \
   --project_id=$PROJECT_ID \
-  $DATASET.$TABLE \
-  schema.json
+  --schema=$BIGQUERY_SCHEMA_FILE \
+  $DATASET.$TABLE
 ```
 
 > Skip or modify this if your schema comes from the Pub/Sub Avro message.
@@ -42,15 +43,15 @@ bq mk --table \
 1. Create Pub/Sub Topics
 
 ```bash
-gcloud pubsub topics create $TOPIC1 --project=$PROJECT_ID
-gcloud pubsub topics create $TOPIC2 --project=$PROJECT_ID
+gcloud pubsub topics create $PUBSUB_TOPIC_ID --project=$PROJECT_ID
+gcloud pubsub topics create $DESTINATION_PUBSUB_TOPIC_ID --project=$PROJECT_ID
 ```
 
 1. Create Pull Subscription for `gke-namespace`
 
 ```bash
-gcloud pubsub subscriptions create $SUBSCRIPTION1 \
-  --topic=$TOPIC1 \
+gcloud pubsub subscriptions create $PUBSUB_SUBSCRIPTION_ID\
+  --topic=$PUBSUB_TOPIC_ID \
   --project=$PROJECT_ID \
   --ack-deadline=30
 ```
@@ -60,8 +61,8 @@ gcloud pubsub subscriptions create $SUBSCRIPTION1 \
 Make sure `pubsub_schema.json` contains a **valid Avro schema**.
 
 ```bash
-gcloud pubsub subscriptions create $SUBSCRIPTION2 \
-  --topic=$TOPIC2 \
+gcloud pubsub subscriptions create $BIGQUERY_SUBSCRIPTION_ID \
+  --topic=$DESTINATION_PUBSUB_TOPIC_ID \
   --bigquery-table=$PROJECT_ID:$DATASET.$TABLE \
   --use-topic-schema \
   --message-format=avro \
@@ -108,8 +109,8 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
 
 gcloud iam service-accounts add-iam-policy-binding \
    --role roles/iam.workloadIdentityUser \
-   --member "serviceAccount:gke-vpa-optimization.svc.id.goog[default/metrics-job]" \
-   metrics-accessor@gke-vpa-optimization.iam.gserviceaccount.com
+   --member "serviceAccount:${PROJECT_ID}.svc.id.goog[NAMESPACE/KSA]" \
+   metrics-accessor@{$PROJECT_ID}.iam.gserviceaccount.com
 
 ```
 
