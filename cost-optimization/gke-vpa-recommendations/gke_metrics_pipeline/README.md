@@ -5,7 +5,7 @@ Whats needed:
 - 1 bigquery subscription - [pubsub schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/pubsub_schema.json)
 
 - 1 bigquery table - [bigquery_schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/bigquery_schema.json)
-- a service account [pubsub permissions](#Permission)
+- a service account [pubsub permissions](##permissions)
 1. Set project 
 ```sh
 export PROJECT_ID="your-gcp-project-id"
