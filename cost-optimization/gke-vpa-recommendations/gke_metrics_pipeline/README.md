@@ -5,7 +5,9 @@ Whats needed:
 - 1 bigquery subscription - [pubsub schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/pubsub_schema.json)
 
 - 1 bigquery table - [bigquery_schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/bigquery_schema.json)
+- 1 [Artifact Repo](#artifact_registry) for building the images
 - a service account [pubsub permissions](#permissions)
+
 1. Set project 
 ```sh
 export PROJECT_ID="your-gcp-project-id"
@@ -33,7 +35,7 @@ export INCLUDED_OBJECTS="CronJob,..."
 gcloud config set project $PROJECT_ID
 gcloud auth application-default login
 ```
-
+## BigQuery
 1. Create BigQuery Dataset
 
 ```bash
@@ -52,7 +54,7 @@ bq mk --table \
   $DATASET.$TABLE
 ```
 
-> Skip or modify this if your schema comes from the Pub/Sub Avro message.
+## Pubsub
 
 
 1. Create Pub/Sub Topics
@@ -84,6 +86,8 @@ gcloud pubsub subscriptions create $BIGQUERY_SUBSCRIPTION_ID \
   --avro-schema-file=$SCHEMA_FILE \
   --project=$PROJECT_ID
 ```
+
+## Artifact Registry
 
 1. Create an artifact repository (If we don't already have one)
 
@@ -130,6 +134,7 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 ```
 
+## Kubernetes
 1. Apply manifests
 
 ```sh
