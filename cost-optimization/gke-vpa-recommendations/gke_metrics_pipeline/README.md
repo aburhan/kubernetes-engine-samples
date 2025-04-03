@@ -2,9 +2,9 @@
 Whats needed:
 - 2 pubsub topics
 - 1 pubsub pull subscription
-- 1 bigquery subscription - [pubsub schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/pubsub_schema.json)
+- 1 bigquery subscription - [pubsub schema](schemas/pubsub_schema.json)
 
-- 1 bigquery table - [bigquery_schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/bigquery_schema.json)
+- 1 bigquery table - [bigquery_schema](schemas/bigquery_schema.json)
 - 1 [Artifact Registry](#artifact-registry) for building the images
 - a service account [pubsub permissions](#permissions)
 
