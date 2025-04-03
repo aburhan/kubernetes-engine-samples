@@ -4,7 +4,7 @@ metadata:
   name: job-env-config
 data:
   SOLUTION_VERSION: "v1.2"
-  PROJECT_ID: "gke-vpa-optimization"
+  PROJECT_ID: "[PROJECT_ID]"
   PUBSUB_TOPIC_ID: "gke-namespaces"
   PUBSUB_SUBSCRIPTION_ID: "gke-namespaces-sub"
   DESTINATION_PUBSUB_TOPIC_ID: "gke-metric-to-bq"
