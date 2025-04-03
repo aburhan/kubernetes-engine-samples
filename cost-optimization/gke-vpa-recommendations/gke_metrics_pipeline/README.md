@@ -15,6 +15,14 @@ export BIGQUERY_SCHEMA_FILE="schemas/bigquery_schema.json"
 export CLUSTER_NAME="your-cluster"
 export REGION="us-central1"
 
+# To exclude namespaces
+export EXCLUDED_NS="namespace1,namespace2,..."
+
+# To only get specfic namespaces
+export INCLUDED_NS="namespace3,namespace4,..."
+
+# To include k8s objects
+export INCLUDED_OBJECTS="CronJob,..."
 gcloud config set project $PROJECT_ID
 gcloud auth application-default login
 ```
