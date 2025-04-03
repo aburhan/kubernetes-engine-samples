@@ -5,7 +5,7 @@ Whats needed:
 - 1 bigquery subscription - [pubsub schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/pubsub_schema.json)
 
 - 1 bigquery table - [bigquery_schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/bigquery_schema.json)
-- 1 [Artifact Repo](#artifact_registry) for building the images
+- 1 [Artifact Registry](#artifact-registry) for building the images
 - a service account [pubsub permissions](#permissions)
 
 1. Set project 
