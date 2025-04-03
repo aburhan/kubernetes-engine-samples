@@ -2,7 +2,9 @@ import json
 import logging
 from google.cloud import pubsub_v1
 from monitoring import query_cloud_monitoring, build_cloud_monitoring_param
-from utils import enrich_message_and_publish_message
+from utils import (
+    get_first_point, get_value_from_point, process_metric_value
+)
 from config import PROJECT_ID, DESTINATION_PUBSUB_TOPIC_ID
 
 
@@ -56,6 +58,39 @@ def consume_messages(subscription_id):
             streaming_pull_future.result()
         except KeyboardInterrupt:
             streaming_pull_future.cancel()
+
+def enrich_message_and_publish_message(monitoring_data, replica_lookup):
+
+    for item in monitoring_data.get("timeSeries", []):
+        point = get_first_point(item)
+
+        # Extract controller name/type for lookup
+        system_labels = item.get("metadata", {}).get("systemLabels", {})
+        controller_name = system_labels.get("top_level_controller_name")
+        controller_type = system_labels.get("top_level_controller_type")
+
+        # Lookup replicas
+        replicas = replica_lookup.get(f"{controller_name}|{controller_type}")
+
+        metric_type = item.get("metric", {}).get("type")
+
+        double_value = get_value_from_point(point, "doubleValue")
+        int64_value = get_value_from_point(point, "int64Value")
+
+        value, units = process_metric_value(metric_type, double_value, int64_value)
+
+        message = {
+            "metric": item.get("metric", {}).get("type"),
+            **item.get("resource", {}).get("labels", {}),
+            "startTime": point.get("interval", {}).get("startTime"),
+            "endTime": point.get("interval", {}).get("endTime"),
+            "value": str(value),
+            "valueUnits": units,
+            "replicas": str(replicas),
+            "controller_name": controller_name,
+            "controller_type": controller_type,
+        }
+    publish_to_pubsub(message)
 
 
 def publish_to_pubsub(message):

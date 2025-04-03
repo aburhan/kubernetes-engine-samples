@@ -23,5 +23,6 @@ METRICS_SCOPE = "https://www.googleapis.com/auth/monitoring.read"
 
 # Logging Configuration
 LOGGING_CONFIG = {
+    "level": "DEBUG",
     "format": "%(asctime)s - %(levelname)s - %(message)s",
 }

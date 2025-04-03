@@ -16,7 +16,7 @@ spec:
       serviceAccountName: metrics-job
       containers:
       - name: cloud-monitoring-to-pubsub
-        image: us-central1-docker.pkg.dev/[PROJECT_ID]/main/cloud-monitoring-to-pubsub-image:latest
+        image: us-central1-docker.pkg.dev/gke-vpa-optimization/main/cloud-monitoring-to-pubsub-image:latest
         envFrom:
             - configMapRef:
                 name: job-env-config

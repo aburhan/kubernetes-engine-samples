@@ -55,6 +55,7 @@ METRIC_WINDOW = int(os.environ.get("METRIC_WINDOW", "300"))
 
 # Logging Configuration
 LOGGING_CONFIG = {
+    "level": "DEBUG",
     "format": "%(asctime)s - %(levelname)s - %(message)s",
 }
 

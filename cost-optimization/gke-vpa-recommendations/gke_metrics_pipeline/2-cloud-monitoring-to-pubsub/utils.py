@@ -1,6 +1,6 @@
 import google.auth
 import google.auth.transport.requests
-from pubsub import publish_to_pubsub
+
 
 def get_auth_token():
     """
@@ -57,38 +57,3 @@ def process_metric_value(metric_name, double_value, int64_value):
 
     return value, units
 
-def enrich_message_and_publish_message(monitoring_data, replica_lookup):
-    transformed_list = []
-
-    for item in monitoring_data.get("timeSeries", []):
-        point = get_first_point(item)
-
-        # Extract controller name/type for lookup
-        system_labels = item.get("metadata", {}).get("systemLabels", {})
-        controller_name = system_labels.get("top_level_controller_name")
-        controller_type = system_labels.get("top_level_controller_type")
-
-        # Lookup replicas
-        replicas = replica_lookup.get(f"{controller_name}|{controller_type}")
-
-        metric_type = item.get("metric", {}).get("type")
-
-        double_value = get_value_from_point(point, "doubleValue")
-        int64_value = get_value_from_point(point, "int64Value")
-
-        value, units = process_metric_value(metric_type, double_value, int64_value)
-
-        message_data = {
-            "metric": item.get("metric", {}).get("type"),
-            **item.get("resource", {}).get("labels", {}),
-            "startTime": point.get("interval", {}).get("startTime"),
-            "endTime": point.get("interval", {}).get("endTime"),
-            "value": value,
-            "valueUnits": units,
-            "replicas": replicas,
-            "controller_name": controller_name,
-            "controller_type": controller_type,
-        }
-
-        # Publish the response to the destination topic
-        publish_to_pubsub(message_data )

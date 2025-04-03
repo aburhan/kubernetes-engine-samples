@@ -16,7 +16,7 @@ spec:
           serviceAccountName: metrics-job
           containers:
           - name: gke-namespace-metric-builder-container
-            image: us-central1-docker.pkg.dev/[PROJECT_ID]/main/gke-namespace-builder-image:latest
+            image: us-central1-docker.pkg.dev/gke-vpa-optimization/main/gke-namespace-builder-image:latest
             envFrom:
               - configMapRef:
                   name: job-env-config

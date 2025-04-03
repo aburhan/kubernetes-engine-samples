@@ -1,67 +1,67 @@
 [
-    {
-      "name": "metric",
-      "type": "STRING",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "container_name",
-      "type": "STRING",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "project_id",
-      "type": "STRING",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "location",
-      "type": "STRING",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "namespace_name",
-      "type": "STRING",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "cluster_name",
-      "type": "STRING",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "startTime",
-      "type": "TIMESTAMP",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "endTime",
-      "type": "TIMESTAMP",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "doubleValue",
-      "type": "BIGNUMERIC",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "int64Value",
-      "type": "BIGNUMERIC",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "replicas",
-      "type": "STRING",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "controller_name",
-      "type": "STRING",
-      "mode": "NULLABLE"
-    },
-    {
-      "name": "controller_type",
-      "type": "STRING",
-      "mode": "NULLABLE"
-    }
-  ]
+  {
+    "name": "metric",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "container_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "location",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "namespace_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "cluster_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "project_id",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "startTime",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "endTime",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "value",
+    "type": "NUMERIC",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "valueUnits",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "replicas",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "controller_name",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  },
+  {
+    "name": "controller_type",
+    "type": "STRING",
+    "mode": "NULLABLE"
+  }
+]
