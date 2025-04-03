@@ -1,7 +1,12 @@
 # Setup
+Whats needed:
+- 2 pubsub topics
+- 1 pubsub pull subscription
+- 1 bigquery subscription - [pubsub schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/pubsub_schema.json)
 
+- 1 bigquery table - [bigquery_schema](cost-optimization/gke-vpa-recommendations/gke_metrics_pipeline/schemas/bigquery_schema.json)
+- a service account [pubsub permissions](##Permission)
 1. Set project 
-
 ```sh
 export PROJECT_ID="your-gcp-project-id"
 export DATASET="gke-metric-dataset"
@@ -23,6 +28,8 @@ export INCLUDED_NS="namespace3,namespace4,..."
 
 # To include k8s objects
 export INCLUDED_OBJECTS="CronJob,..."
+
+
 gcloud config set project $PROJECT_ID
 gcloud auth application-default login
 ```
@@ -92,6 +99,7 @@ gcloud artifacts repositories create main \
 gcloud builds submit --config cloudbuild.yaml .
 ```
 
+## Permissions
 1. Grant permissions
 
 ```sh
