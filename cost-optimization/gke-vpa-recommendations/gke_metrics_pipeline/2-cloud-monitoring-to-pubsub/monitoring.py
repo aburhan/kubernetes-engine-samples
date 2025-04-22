@@ -24,6 +24,10 @@ def build_cloud_monitoring_param(message_data):
         f'resource.labels.namespace_name="{namespace}" AND '
         f'resource.labels.location="{location}"'
     )
+
+    if metric_from_message == "kubernetes.io/container/memory/used_bytes":
+        filter_expression += ' AND metric.label.memory_type="non-evictable"'
+
     window_seconds = window_from_message
 
     end_time = datetime.now(timezone.utc)

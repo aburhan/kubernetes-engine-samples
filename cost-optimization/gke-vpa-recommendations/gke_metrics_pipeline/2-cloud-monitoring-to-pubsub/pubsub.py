@@ -1,26 +1,20 @@
 import json
 import logging
 from google.cloud import pubsub_v1
+from concurrent.futures import TimeoutError
+from google.cloud import pubsub_v1
+from google.cloud.pubsub_v1.subscriber import exceptions as sub_exceptions
 from monitoring import query_cloud_monitoring, build_cloud_monitoring_param
 from utils import (
     get_first_point, get_value_from_point, process_metric_value
 )
 from config import PROJECT_ID, DESTINATION_PUBSUB_TOPIC_ID
 
+timeout = 30.0
 
-def consume_messages(subscription_id):
-    """
-    Consumes messages from a Pub/Sub subscription, processes them, and
-    publishes results to another Pub/Sub topic.
-
-    Args:
-        subscription_id (str): The ID of the Pub/Sub subscription to consume messages.
-        destination_topic (str): The ID of the Pub/Sub topic to publish query results.
-    """
-    subscriber = pubsub_v1.SubscriberClient()
-    subscription_path = subscriber.subscription_path(PROJECT_ID, subscription_id)
-
-    def callback(message):
+def callback(message: pubsub_v1.subscriber.message.Message) -> None:
+        logging.info(f"Received {message}.")
+        ack_future = message.ack_with_response()
         try:
             # Decode message
             message_data = json.loads(message.data.decode("utf-8"))
@@ -42,22 +36,35 @@ def consume_messages(subscription_id):
             # Enrich data
             message_data = enrich_message_and_publish_message(
                 monitoring_response, message_data["controller_dict"],)
+            ack_future.result(timeout=timeout)
+        except sub_exceptions.AcknowledgeError as e:
+            logging.error(
+                f"Ack for message {message.message_id} failed with error: {e.error_code}"
+            )
+def consume_messages(subscription_id):
+    """
+    Consumes messages from a Pub/Sub subscription, processes them, and
+    publishes results to another Pub/Sub topic.
 
-        except Exception as e:
-            logging.error(f"Error processing message: {e}")
-        finally:
-            message.ack()
-
-    # Start the subscription
+    Args:
+        subscription_id (str): The ID of the Pub/Sub subscription to consume messages.
+        destination_topic (str): The ID of the Pub/Sub topic to publish query results.
+    """
+    subscriber = pubsub_v1.SubscriberClient()
+    subscription_path = subscriber.subscription_path(PROJECT_ID, subscription_id)
+    
     streaming_pull_future = subscriber.subscribe(subscription_path, callback=callback)
-    logging.info(f"Listening for messages on {subscription_path}...")
+    logging.info(f"Listening for messages on {subscription_path}..\n")
 
-    # Keep the subscriber running
+    # Wrap subscriber in a 'with' block to automatically call close() when done.
     with subscriber:
         try:
-            streaming_pull_future.result()
-        except KeyboardInterrupt:
-            streaming_pull_future.cancel()
+            # When `timeout` is not set, result() will block indefinitely,
+            # unless an exception is encountered first.
+            streaming_pull_future.result(timeout=timeout)
+        except TimeoutError:
+            streaming_pull_future.cancel()  # Trigger the shutdown.
+            streaming_pull_future.result()  # Block until the shutdown is complete.
 
 def enrich_message_and_publish_message(monitoring_data, replica_lookup):
 
@@ -90,7 +97,7 @@ def enrich_message_and_publish_message(monitoring_data, replica_lookup):
             "controller_name": controller_name,
             "controller_type": controller_type,
         }
-    publish_to_pubsub(message)
+        publish_to_pubsub(message)
 
 
 def publish_to_pubsub(message):

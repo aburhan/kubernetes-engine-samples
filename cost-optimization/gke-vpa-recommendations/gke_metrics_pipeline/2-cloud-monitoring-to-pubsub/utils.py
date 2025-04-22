@@ -48,12 +48,18 @@ def process_metric_value(metric_name, double_value, int64_value):
         value = double_value or int64_value  # Prioritize doubleValue if both are present
 
     if value is not None:
-        if "memory" in metric_name:
-            value = value / (1024 * 1024)  # Bytes to MiB
-            units = "MiB"
-        elif "cpu" in metric_name:
-            value = value * 1000  # vCPU to millicores
-            units = "millicores"
-
+        try:
+            value = float(value)
+            if "memory" in metric_name:
+                value = value / (1024 * 1024)  # Bytes to MiB
+                units = "MiB"
+            elif "cpu" in metric_name:
+                value = value * 1000  # vCPU to millicores
+                units = "millicores"
+        except (ValueError, TypeError):
+            # Handle cases where casting to float fails (shouldn't happen if inputs are int/float/None)
+            print(f"Warning: Could not convert value {value} to float for metric {metric_name}")
+            value = None
+            units = None
     return value, units
 
