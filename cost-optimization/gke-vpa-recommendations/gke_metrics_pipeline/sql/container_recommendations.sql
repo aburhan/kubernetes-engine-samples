@@ -1,5 +1,5 @@
 /*
-# Copyright 2023 Google Inc.
+# Copyright 2025 Google Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ WITH gke_metrics AS (
     container_name,
     CAST(replicas AS INT64) AS replicas,
     CAST(value AS FLOAT64) AS value,
-  FROM `gke-vpa-optimization.metric_export.sample2`)
-  PIVOT(MAX(value) 
+  FROM `['YOUR TABLE HERE']`)
+  PIVOT(AVG(value) 
   FOR metric IN 
     (
     'kubernetes.io/container/cpu/core_usage_time' AS cpu_mcores_usage,
@@ -47,10 +47,22 @@ WITH gke_metrics AS (
   SELECT *,
   ROUND(COALESCE(SAFE_DIVIDE(cpu_mcores_usage, cpu_requested_mcores), 100), 2) AS cpu_request_utilization,
   ROUND(COALESCE(SAFE_DIVIDE(memory_mib_usage_max, memory_requested_mib), 100), 2) AS mem_request_utilization,
-  # A good practice for setting your container resources is to use the same amount of memory for requests and limits, and a larger or unbounded CPU limit. 
-  # https://cloud.google.com/architecture/best-practices-for-running-cost-effective-kubernetes-applications-on-gke#set_appropriate_resource_requests_and_limits
-  CEIL( cpu_mcores_usage * 1.30) AS cpu_requested_recommendation, # CPU recommend request = CPU usage  + 30% Buffer
-  CEIL( cpu_mcores_usage * 2.00) AS cpu_limit_recommendation, # CPU recommended limit = CPU usage + 100% Buffer for burstable workloads
+  /*
+  Recommended practices for setting Kubernetes container resources:
+  
+  Aim for equal memory requests and limits, while allowing for a larger or unbounded CPU limit, especially for burstable workloads.
+  
+  Calculations based on 14+ day usage data:
+  
+  * **Memory Request & Limit:** Use the same value, calculated as `(maximum memory usage) * 1.30` (adding a 30% buffer).
+  * **CPU Request:** Calculated as `(99th percentile CPU usage) * 1.30` (adding a 30% buffer).
+  * **CPU Limit:** Should be set higher than the request. For burstable workloads, a guideline is `(99th percentile CPU usage) * 2.00` (adding a 100% buffer).
+  
+  For more details, see:
+  https://cloud.google.com/architecture/best-practices-for-running-cost-effective-kubernetes-applications-on-gke#set_appropriate_resource_requests_and_limits
+  */
+  CEIL( cpu_mcores_usage * 1.30) AS cpu_requested_recommendation, 
+  CEIL( cpu_mcores_usage * 2.00) AS cpu_limit_recommendation,
   CEIL( memory_mib_usage_max * 1.30) AS memory_requested_recommendation, 
   CEIL( memory_mib_usage_max * 1.30) AS memory_limit_recommendation,
   FROM gke_metrics
