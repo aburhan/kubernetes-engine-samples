@@ -1,26 +1,20 @@
 import json
 import logging
 from google.cloud import pubsub_v1
-from concurrent.futures import TimeoutError
 from google.cloud import pubsub_v1
-from google.cloud.pubsub_v1.subscriber import exceptions as sub_exceptions
 from monitoring import query_cloud_monitoring, build_cloud_monitoring_param
 from utils import (
     get_first_point, get_value_from_point, process_metric_value
 )
 from config import PROJECT_ID, DESTINATION_PUBSUB_TOPIC_ID
-
-timeout = 30.0
-
 def callback(message: pubsub_v1.subscriber.message.Message) -> None:
-        logging.info(f"Received {message}.")
-        ack_future = message.ack_with_response()
+        logging.info(f"Received {message.message_id}\n {message}.")
         try:
             # Decode message
             message_data = json.loads(message.data.decode("utf-8"))
             logging.info(
-                f"\nNamespace: {message_data['namespace']}"
-                f"Received message: {message_data['cloud_monitoring_query']['metric']}")
+                f"Namespace: {message_data['namespace']}\n"
+                f"Metric: {message_data['cloud_monitoring_query']['metric']}")
 
             # Extract the query field
             query = build_cloud_monitoring_param(message_data)
@@ -34,13 +28,17 @@ def callback(message: pubsub_v1.subscriber.message.Message) -> None:
             monitoring_response = query_cloud_monitoring(query)
 
             # Enrich data
-            message_data = enrich_message_and_publish_message(
+            enrich_message_and_publish_message(
                 monitoring_response, message_data["controller_dict"],)
-            ack_future.result(timeout=timeout)
-        except sub_exceptions.AcknowledgeError as e:
+            message.ack()
+            logging.info(f"Acknowledged successfully processed message ID: {message.message_id}")
+        except Exception as e:
             logging.error(
                 f"Ack for message {message.message_id} failed with error: {e.error_code}"
             )
+            message.nack()
+            logging.warning(f"Negative acknowledged message ID: {message.message_id} due to processing error.")
+
 def consume_messages(subscription_id):
     """
     Consumes messages from a Pub/Sub subscription, processes them, and
@@ -48,7 +46,6 @@ def consume_messages(subscription_id):
 
     Args:
         subscription_id (str): The ID of the Pub/Sub subscription to consume messages.
-        destination_topic (str): The ID of the Pub/Sub topic to publish query results.
     """
     subscriber = pubsub_v1.SubscriberClient()
     subscription_path = subscriber.subscription_path(PROJECT_ID, subscription_id)
@@ -59,15 +56,15 @@ def consume_messages(subscription_id):
     # Wrap subscriber in a 'with' block to automatically call close() when done.
     with subscriber:
         try:
-            # When `timeout` is not set, result() will block indefinitely,
-            # unless an exception is encountered first.
-            streaming_pull_future.result(timeout=timeout)
-        except TimeoutError:
+            streaming_pull_future.result()
+        except KeyboardInterrupt:
             streaming_pull_future.cancel()  # Trigger the shutdown.
             streaming_pull_future.result()  # Block until the shutdown is complete.
 
 def enrich_message_and_publish_message(monitoring_data, replica_lookup):
-
+    """
+    Enriches monitoring data with replica information and publishes to Pub/Sub.
+    """
     for item in monitoring_data.get("timeSeries", []):
         point = get_first_point(item)
 
